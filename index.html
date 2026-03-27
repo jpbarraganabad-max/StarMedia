@@ -30,17 +30,11 @@
             color: #EDF2F7;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #10141c;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 12px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #10141c; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 12px; }
 
+        /* ── HEADER ── */
         .header {
             position: sticky;
             top: 0;
@@ -85,16 +79,16 @@
         .nav-links a {
             color: #CBD5E1;
             text-decoration: none;
-            transition: 0.2s;
+            transition: color 0.2s;
             font-size: 1rem;
+            padding-bottom: 2px;
+            border-bottom: 2px solid transparent;
         }
-        .nav-links a:hover {
-            color: #60A5FA;
-        }
+        .nav-links a:hover { color: #60A5FA; }
         .nav-links a.active {
-    color: #3b82f6;
-    border-bottom: 2px solid #3b82f6;
-}
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+        }
 
         .cart-icon {
             position: relative;
@@ -103,16 +97,13 @@
             padding: 8px 14px;
             border-radius: 40px;
             backdrop-filter: blur(4px);
-            transition: all 0.2s;
+            transition: background 0.2s;
             display: flex;
             align-items: center;
             gap: 8px;
             user-select: none;
         }
-        .cart-icon i {
-            font-size: 1.4rem;
-            color: #94a3b8;
-        }
+        .cart-icon i { font-size: 1.4rem; color: #94a3b8; }
         .cart-count {
             background: #3b82f6;
             color: white;
@@ -122,11 +113,11 @@
             font-size: 0.8rem;
             min-width: 24px;
             text-align: center;
+            transition: transform 0.2s;
         }
-        .cart-icon:hover {
-            background: rgba(59,130,246,0.4);
-        }
+        .cart-icon:hover { background: rgba(59,130,246,0.4); }
 
+        /* ── HERO ── */
         .hero {
             display: flex;
             flex-wrap: wrap;
@@ -137,10 +128,7 @@
             margin: 0 auto;
             gap: 2rem;
         }
-        .hero-text {
-            flex: 1;
-            min-width: 280px;
-        }
+        .hero-text { flex: 1; min-width: 280px; }
         .hero-text h1 {
             font-size: 3.2rem;
             font-weight: 800;
@@ -176,16 +164,14 @@
             transform: translateY(-2px);
             box-shadow: 0 15px 25px -8px #1e40af;
         }
-        .hero-image {
-            flex: 1;
-            text-align: center;
-        }
+        .hero-image { flex: 1; text-align: center; }
         .hero-image img {
             max-width: 100%;
             filter: drop-shadow(0 20px 25px -10px rgba(0,0,0,0.5));
             border-radius: 30px;
         }
 
+        /* ── FEATURES ── */
         .features {
             display: flex;
             flex-wrap: wrap;
@@ -207,11 +193,9 @@
             backdrop-filter: blur(8px);
             border: 1px solid rgba(59,130,246,0.3);
         }
-        .feature-card i {
-            font-size: 1.8rem;
-            color: #3b82f6;
-        }
+        .feature-card i { font-size: 1.8rem; color: #3b82f6; }
 
+        /* ── PRODUCTS ── */
         .products-section {
             padding: 2rem 2rem 4rem;
             max-width: 1400px;
@@ -242,7 +226,7 @@
             padding: 10px 16px;
             border-radius: 999px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
             font-weight: 600;
         }
         .category-btn:hover,
@@ -262,9 +246,8 @@
             background: #11161f;
             border-radius: 32px;
             overflow: hidden;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #1e2a3a;
-            backdrop-filter: blur(2px);
             box-shadow: 0 10px 20px -5px rgba(0,0,0,0.5);
             opacity: 0;
             transform: translateY(20px);
@@ -276,6 +259,11 @@
             border-color: #3b82f6;
             box-shadow: 0 25px 35px -12px #0f172a;
         }
+
+        .product-img-wrapper {
+            overflow: hidden;
+            position: relative;
+        }
         .product-img {
             width: 100%;
             height: 210px;
@@ -283,12 +271,21 @@
             transition: transform 0.5s;
             display: block;
         }
-        .product-card:hover .product-img {
-            transform: scale(1.03);
+        .product-card:hover .product-img { transform: scale(1.03); }
+
+        .product-badge-overlay {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(37,99,235,0.8);
+            backdrop-filter: blur(4px);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
-        .product-info {
-            padding: 1.5rem;
-        }
+
+        .product-info { padding: 1.5rem; }
         .product-title {
             font-size: 1.2rem;
             font-weight: 700;
@@ -335,7 +332,7 @@
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.2s, border-color 0.2s, transform 0.15s;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -348,6 +345,7 @@
             transform: scale(0.98);
         }
 
+        /* ── FOOTER ── */
         footer {
             background: #03060b;
             text-align: center;
@@ -356,7 +354,12 @@
             margin-top: 2rem;
             color: #7e8b9c;
         }
+        .footer-icons {
+            margin-top: 12px;
+            letter-spacing: 2px;
+        }
 
+        /* ── CART MODAL ── */
         .cart-modal {
             display: none;
             position: fixed;
@@ -389,19 +392,17 @@
             font-size: 1.5rem;
             font-weight: 700;
         }
-        .cart-header i {
+        .cart-close-btn {
             cursor: pointer;
             font-size: 1.6rem;
             color: #94a3b8;
-            transition: 0.2s;
+            transition: color 0.2s;
+            background: none;
+            border: none;
         }
-        .cart-header i:hover {
-            color: #f87171;
-        }
-        .cart-items-list {
-            flex: 1;
-            margin-bottom: 1.5rem;
-        }
+        .cart-close-btn:hover { color: #f87171; }
+
+        .cart-items-list { flex: 1; margin-bottom: 1.5rem; }
         .cart-item {
             display: flex;
             justify-content: space-between;
@@ -413,26 +414,39 @@
             margin-bottom: 12px;
             border: 1px solid #2a3a48;
         }
-        .cart-item-info h4 {
-            font-size: 1rem;
-            margin-bottom: 4px;
-        }
-        .cart-item-info p {
-            font-size: 0.8rem;
-            color: #facc15;
-            font-weight: bold;
-        }
+        .cart-item-info h4 { font-size: 1rem; margin-bottom: 4px; }
+        .cart-item-info p { font-size: 0.8rem; color: #facc15; font-weight: bold; }
+
+        /* ── MEJORA: acciones de cantidad ── */
         .cart-item-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             flex-shrink: 0;
         }
+        .qty-btn {
+            background: #1e2a3a;
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            font-weight: 700;
+            line-height: 1;
+        }
+        .qty-btn:hover { background: #2563eb; border-color: #3b82f6; }
         .cart-qty {
-            min-width: 30px;
+            min-width: 28px;
             text-align: center;
             font-weight: 700;
             color: #cbd5e1;
+            font-size: 0.95rem;
         }
         .remove-item {
             background: #1e2a3a;
@@ -442,12 +456,10 @@
             font-size: 1.05rem;
             padding: 6px 10px;
             border-radius: 30px;
-            transition: 0.2s;
+            transition: background 0.2s, color 0.2s;
         }
-        .remove-item:hover {
-            background: #4a1e2c;
-            color: #ff9f9f;
-        }
+        .remove-item:hover { background: #4a1e2c; color: #ff9f9f; }
+
         .cart-total {
             border-top: 2px solid #2d3e5a;
             padding-top: 1rem;
@@ -467,21 +479,20 @@
             color: white;
             cursor: pointer;
             width: 100%;
-            transition: 0.2s;
+            transition: transform 0.2s, background 0.2s;
             display: flex;
             justify-content: center;
             gap: 8px;
         }
-        .checkout-btn:hover {
-            transform: scale(0.98);
-            background: #1e40af;
-        }
+        .checkout-btn:hover { transform: scale(0.98); background: #1e40af; }
+
         .empty-cart-msg {
             text-align: center;
             padding: 2rem;
             color: #7e8b9c;
         }
 
+        /* ── TOAST ── */
         .toast-notify {
             position: fixed;
             bottom: 30px;
@@ -501,8 +512,14 @@
             transition: transform 0.3s ease;
             pointer-events: none;
         }
-        .toast-notify.show {
-            transform: translateX(0);
+        .toast-notify.show { transform: translateX(0); }
+
+        /* ── PRODUCT DETAIL MODAL ── */
+        .product-detail-panel {
+            max-width: 900px;
+            width: min(900px, 100%);
+            border-left: none;
+            border-right: 2px solid #3b82f6;
         }
 
         .product-detail {
@@ -518,11 +535,8 @@
             box-shadow: 0 18px 35px -18px rgba(0,0,0,0.8);
             object-fit: cover;
         }
-        .product-detail h2 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-        .product-detail .detail-badge {
+        .product-detail h2 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        .detail-badge {
             display: inline-block;
             margin-bottom: 0.8rem;
             background: rgba(59,130,246,0.14);
@@ -532,19 +546,24 @@
             font-size: 0.78rem;
             font-weight: 700;
         }
-        .product-detail .detail-specs {
+        .detail-category {
+            color: #93c5fd;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        .detail-specs {
             color: #cbd5e1;
             line-height: 1.7;
             margin: 1rem 0;
             font-size: 0.95rem;
         }
-        .product-detail .detail-price {
+        .detail-price {
             font-size: 2rem;
             font-weight: 800;
             color: #facc15;
             margin: 1rem 0 0.4rem;
         }
-        .product-detail .detail-old {
+        .detail-old {
             color: #64748b;
             text-decoration: line-through;
             margin-left: 10px;
@@ -578,66 +597,35 @@
             border-radius: 40px;
             font-weight: 700;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        .detail-close:hover {
-            background: #334155;
-        }
+        .detail-close:hover { background: #334155; }
 
+        /* ── RESPONSIVE ── */
         @media (max-width: 900px) {
-            .product-detail {
-                grid-template-columns: 1fr;
-            }
+            .product-detail { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 700px) {
-            .header {
-                padding: 1rem;
-            }
-            .hero-text h1 {
-                font-size: 2.2rem;
-            }
-            .cart-panel {
-                width: 100%;
-                max-width: 100%;
-            }
-            .categories {
-                padding-left: 0;
-            }
+            .header { padding: 1rem; }
+            .hero-text h1 { font-size: 2.2rem; }
+            .cart-panel { width: 100%; max-width: 100%; }
+            .categories { padding-left: 0; }
             .nav-links {
-    width: 100%;
-    justify-content: center;
-    gap: 1rem;
-    font-size: 0.9rem;
-}
-
-.product-title {
-    font-size: 1.1rem;
-}
-
-.price {
-    font-size: 1.4rem;
-}
-
-.btn-add {
-    padding: 10px;
-    font-size: 0.9rem;
-}
-
-/* MODAL PRODUCTO  */
-#productModalContent {
-    flex-direction: column !important;
-}
-
-#productModalContent img {
-    width: 100% !important;
-}
+                width: 100%;
+                justify-content: center;
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            .product-title { font-size: 1.1rem; }
+            .price { font-size: 1.4rem; }
+            .btn-add { padding: 10px; font-size: 0.9rem; }
+            .product-detail { flex-direction: column; }
+            .product-detail-image { width: 100%; }
         }
 
         @keyframes fadeUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -645,19 +633,19 @@
 
 <header class="header">
     <div class="logo">
-        <img src="img/logo.jpg" alt="logo" class="logo-img">
+        <img src="img/logo.jpg" alt="Logo Star Media Computer's" class="logo-img">
         <span>STAR MEDIA <span style="color:#3b82f6">COMPUTER'S</span></span>
     </div>
-    <div class="nav-links">
-        <a href="#" id="inicioBtn">Inicio</a>
+    <nav class="nav-links" aria-label="Navegación principal">
+        <a href="#" id="inicioBtn" class="active">Inicio</a>
         <a href="#" id="productosBtn">Productos</a>
         <a href="#" id="ofertasBtn">Ofertas</a>
-        <a href="https://wa.me/593991603927" target="_blank">Contacto</a>
-    </div>
-    <div class="cart-icon" id="openCartBtn">
-        <i class="fas fa-shopping-cart"></i>
+        <a href="https://wa.me/593991603927" target="_blank" rel="noopener noreferrer">Contacto</a>
+    </nav>
+    <button class="cart-icon" id="openCartBtn" aria-label="Abrir carrito de compras">
+        <i class="fas fa-shopping-cart" aria-hidden="true"></i>
         <span class="cart-count" id="cartCounter">0</span>
-    </div>
+    </button>
 </header>
 
 <main>
@@ -665,27 +653,27 @@
         <div class="hero-text">
             <h1>Potencia creativa.<br>Rendimiento sin límites.</h1>
             <p>En Star Media Computer's encuentras laptops, monitores, periféricos y equipos para creadores. Calidad profesional, diseño limpio y soporte experto.</p>
-            <button class="btn-primary" id="exploreBtn"><i class="fas fa-arrow-right"></i> Explorar colección</button>
+            <button class="btn-primary" id="exploreBtn"><i class="fas fa-arrow-right" aria-hidden="true"></i> Explorar colección</button>
         </div>
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&h=400&fit=crop" alt="setup profesional">
+            <img src="https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&h=400&fit=crop" alt="Setup profesional con monitor y teclado">
         </div>
     </div>
 
-    <div class="features">
-        <div class="feature-card"><i class="fas fa-truck-fast"></i> Contraentrega en la Ciudad de Loja</div>
-        <div class="feature-card"><i class="fas fa-shield-alt"></i> 6 meses de garantía por defectos de fábrica</div>
-        <div class="feature-card"><i class="fas fa-headset"></i> Soporte técnico especializado</div>
-        <div class="feature-card"><i class="fas fa-credit-card"></i> Hasta 12 cuotas sin interés</div>
+    <div class="features" aria-label="Beneficios de la tienda">
+        <div class="feature-card"><i class="fas fa-truck-fast" aria-hidden="true"></i> Contraentrega en la Ciudad de Loja</div>
+        <div class="feature-card"><i class="fas fa-shield-alt" aria-hidden="true"></i> 6 meses de garantía por defectos de fábrica</div>
+        <div class="feature-card"><i class="fas fa-headset" aria-hidden="true"></i> Soporte técnico especializado</div>
+        <div class="feature-card"><i class="fas fa-credit-card" aria-hidden="true"></i> Hasta 12 cuotas sin interés</div>
     </div>
 
-    <div class="products-section" id="products">
+    <section class="products-section" id="products" aria-label="Catálogo de productos">
         <div class="section-title">
-            <i class="fas fa-laptop-code"></i>
-            <span>LO MÁS VENDIDO</span>
+            <i class="fas fa-laptop-code" aria-hidden="true"></i>
+            <span id="sectionLabel">LO MÁS VENDIDO</span>
         </div>
 
-        <div class="categories" id="categoryBar">
+        <div class="categories" id="categoryBar" role="group" aria-label="Filtrar por categoría">
             <button class="category-btn active" data-filter="all">Todo</button>
             <button class="category-btn" data-filter="laptops">Laptops</button>
             <button class="category-btn" data-filter="monitores">Monitores</button>
@@ -696,22 +684,27 @@
             <button class="category-btn" data-filter="desktops">Desktops</button>
         </div>
 
-        <div class="product-grid" id="productGrid"></div>
-    </div>
+        <div class="product-grid" id="productGrid" role="list"></div>
+    </section>
 </main>
 
 <footer>
-    <p><i class="fas fa-copyright"></i> 2026 Star Media Computer's — Tecnología que impulsa tu creatividad.</p>
-    <div style="margin-top: 12px; letter-spacing: 2px;">
-        <i class="fab fa-instagram"></i> <i class="fab fa-twitter"></i> <i class="fab fa-facebook"></i>
+    <p><i class="fas fa-copyright" aria-hidden="true"></i> 2026 Star Media Computer's — Tecnología que impulsa tu creatividad.</p>
+    <div class="footer-icons" aria-label="Redes sociales">
+        <i class="fab fa-instagram" aria-label="Instagram"></i>
+        <i class="fab fa-twitter" aria-label="Twitter"></i>
+        <i class="fab fa-facebook" aria-label="Facebook"></i>
     </div>
 </footer>
 
-<div id="cartModal" class="cart-modal">
+<!-- CART MODAL -->
+<div id="cartModal" class="cart-modal" role="dialog" aria-modal="true" aria-label="Carrito de compras">
     <div class="cart-panel">
         <div class="cart-header">
-            <span><i class="fas fa-shopping-bag"></i> Mi Carrito</span>
-            <i class="fas fa-times" id="closeCartBtn"></i>
+            <span><i class="fas fa-shopping-bag" aria-hidden="true"></i> Mi Carrito</span>
+            <button class="cart-close-btn" id="closeCartBtn" aria-label="Cerrar carrito">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
         </div>
         <div id="cartItemsContainer" class="cart-items-list">
             <div class="empty-cart-msg">🛒 Tu carrito está vacío</div>
@@ -720,201 +713,212 @@
             <span>Total:</span>
             <span id="cartTotalAmount">$0</span>
         </div>
-        <button class="checkout-btn" id="checkoutBtn"><i class="fas fa-credit-card"></i> Finalizar compra</button>
+        <button class="checkout-btn" id="checkoutBtn">
+            <i class="fas fa-credit-card" aria-hidden="true"></i> Finalizar compra
+        </button>
     </div>
 </div>
 
-<div id="productModal" class="cart-modal">
-    <div class="cart-panel" style="max-width: 900px; width: min(900px, 100%); border-left: none; border-right: 2px solid #3b82f6;">
+<!-- PRODUCT DETAIL MODAL -->
+<div id="productModal" class="cart-modal" role="dialog" aria-modal="true" aria-label="Detalle del producto">
+    <div class="cart-panel product-detail-panel">
         <div class="cart-header">
-            <span><i class="fas fa-box-open"></i> Detalle del producto</span>
-            <i class="fas fa-times" id="closeProductBtn"></i>
+            <span><i class="fas fa-box-open" aria-hidden="true"></i> Detalle del producto</span>
+            <button class="cart-close-btn" id="closeProductBtn" aria-label="Cerrar detalle">
+                <i class="fas fa-times" aria-hidden="true"></i>
+            </button>
         </div>
         <div id="productDetailContainer"></div>
     </div>
 </div>
 
-<div id="toastMsg" class="toast-notify">
-    <i class="fas fa-check-circle" style="color:#3b82f6"></i>
+<!-- TOAST -->
+<div id="toastMsg" class="toast-notify" role="status" aria-live="polite">
+    <i class="fas fa-check-circle" style="color:#3b82f6" aria-hidden="true"></i>
     <span id="toastText">Producto añadido</span>
 </div>
 
 <script>
-    const products = [
+    // ─────────────────────────────────────────────
+    // SINCRONIZACIÓN CON PANEL ADMIN
+    // Los productos y la portada se leen desde localStorage si el admin los guardó.
+    // ─────────────────────────────────────────────
+
+    // ─────────────────────────────────────────────
+    // DATOS DEFAULT (se usan si el admin nunca guardó cambios)
+    // ─────────────────────────────────────────────
+    const DEFAULT_PRODUCTS = [
         {
-            id: 1,
-            type: "laptops",
-            name: "AERO X9 GT",
-            category: "Gaming Laptop",
+            id: 1, type: "laptops",
+            name: "AERO X9 GT", category: "Gaming Laptop",
             specs: "Intel i9-14900HX · RTX 4090 · 32GB DDR5 · 1TB NVMe · 240Hz",
             description: "Potencia extrema para gaming competitivo, edición pesada y trabajo creativo sin cuello de botella.",
             features: ["Pantalla 240Hz", "Refrigeración avanzada", "Teclado RGB", "Carga rápida"],
-            price: 2899,
-            oldPrice: 2899,
+            price: 2899, oldPrice: 3199,  // MEJORA #2: oldPrice corregido (era igual al price)
             image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=260&fit=crop",
             badge: "🔥 TOP GAMING"
         },
         {
-            id: 2,
-            type: "laptops",
-            name: "ZenBook Pro Duo",
-            category: "Ultrabook Creativo",
+            id: 2, type: "laptops",
+            name: "ZenBook Pro Duo", category: "Ultrabook Creativo",
             specs: "Intel Ultra 9 · RTX 4070 · 32GB · 2TB SSD · Pantalla OLED 4K",
             description: "Pensada para diseño, multitarea y productividad seria con doble pantalla y acabado premium.",
             features: ["OLED 4K", "Doble pantalla", "2TB SSD", "Alto rendimiento"],
-            price: 2399,
-            oldPrice: 2399,
+            price: 2399, oldPrice: 2699,  // MEJORA #2: oldPrice corregido
             image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=260&fit=crop",
             badge: "✨ EDICIÓN LIMITADA"
         },
         {
-            id: 3,
-            type: "desktops",
-            name: "Vortex Titan",
-            category: "Desktop Workstation",
+            id: 3, type: "desktops",
+            name: "Vortex Titan", category: "Desktop Workstation",
             specs: "Ryzen Threadripper · RTX 5090 · 64GB RAM · 4TB M.2",
             description: "Una estación de trabajo pensada para cargas extremas, render y producción profesional.",
             features: ["64GB RAM", "4TB M.2", "Fuente modular", "Enfriamiento premium"],
-            price: 4599,
-            oldPrice: 5299,
+            price: 4599, oldPrice: 5299,
             image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&h=260&fit=crop",
             badge: "🚀 RENDIMIENTO EXTREMO"
         },
         {
-            id: 4,
-            type: "laptops",
-            name: "Edgebook 14 Air",
-            category: "Ultra Ligera",
+            id: 4, type: "laptops",
+            name: "Edgebook 14 Air", category: "Ultra Ligera",
             specs: "Snapdragon X Elite · 16GB · 1TB · Batería 18h · 1.1kg",
             description: "Ligera, silenciosa y eficiente. Ideal para estudiar, trabajo móvil y jornadas largas.",
             features: ["18 horas de batería", "1.1 kg", "1TB SSD", "Portabilidad total"],
-            price: 1199,
-            oldPrice: 1499,
+            price: 1199, oldPrice: 1499,
             image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=260&fit=crop",
             badge: "⚡ EFICIENCIA TOTAL"
         },
         {
-            id: 5,
-            type: "desktops",
-            name: "Nebula Studio",
-            category: "All-in-One Creator",
-            specs: "M3 Ultra · 48GB unificada · 2TB SSD · Pantalla 32” 6K",
+            id: 5, type: "desktops",
+            name: "Nebula Studio", category: "All-in-One Creator",
+            specs: "M3 Ultra · 48GB unificada · 2TB SSD · Pantalla 32\" 6K",
             description: "Todo en uno para creadores y diseñadores que quieren potencia con estética limpia.",
             features: ["Pantalla 6K", "48GB unificada", "2TB SSD", "Diseño minimalista"],
-            price: 3899,
-            oldPrice: 4299,
+            price: 3899, oldPrice: 4299,
             image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=400&h=260&fit=crop",
             badge: "🎨 PARA DISEÑADORES"
         },
         {
-            id: 6,
-            type: "desktops",
-            name: "Phantom S-19",
-            category: "Gaming Desktop",
+            id: 6, type: "desktops",
+            name: "Phantom S-19", category: "Gaming Desktop",
             specs: "Ryzen 9 9950X · RTX 5080 · 32GB RGB · 2TB PCIe 5.0",
             description: "PC gamer de alto nivel para jugar, transmitir y trabajar con fluidez brutal.",
             features: ["32GB RGB", "PCIe 5.0", "Gaming extremo", "Estética premium"],
-            price: 3199,
-            oldPrice: 3699,
+            price: 3199, oldPrice: 3699,
             image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=260&fit=crop",
             badge: "💀 EDICIÓN PHANTOM"
         },
         {
-            id: 7,
-            type: "monitores",
-            name: "Alpha View 27 Pro",
-            category: "Monitor",
+            id: 7, type: "monitores",
+            name: "Alpha View 27 Pro", category: "Monitor",
             specs: "27'' IPS · 165Hz · 2K · HDR · 1ms",
             description: "Monitor ideal para gaming, edición y uso diario con colores vivos y respuesta rápida.",
             features: ["2K QHD", "165Hz", "1ms", "HDR"],
-            price: 329,
-            oldPrice: 389,
+            price: 329, oldPrice: 389,
             image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=260&fit=crop",
             badge: "🖥️ MONITOR PRO"
         },
         {
-            id: 8,
-            type: "perifericos",
-            name: "Pulse X Keyboard",
-            category: "Periférico",
+            id: 8, type: "perifericos",
+            name: "Pulse X Keyboard", category: "Periférico",
             specs: "Mecánico RGB · Switches táctiles · Anti-ghosting · USB-C",
             description: "Teclado mecánico con sensación premium, retroiluminación y respuesta precisa.",
             features: ["Switches táctiles", "RGB", "Anti-ghosting", "USB-C"],
-            price: 89,
-            oldPrice: 109,
+            price: 89, oldPrice: 109,
             image: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=400&h=260&fit=crop",
             badge: "⌨️ MECÁNICO"
         },
         {
-            id: 9,
-            type: "parlantes",
-            name: "SoundCore Duo",
-            category: "Parlantes",
+            id: 9, type: "parlantes",
+            name: "SoundCore Duo", category: "Parlantes",
             specs: "2.1 Stereo · Bluetooth 5.3 · Graves profundos · USB",
             description: "Sonido compacto con cuerpo, ideal para escritorio, música y juegos casuales.",
             features: ["Bluetooth 5.3", "2.1 stereo", "Graves potentes", "Diseño compacto"],
-            price: 79,
-            oldPrice: 99,
+            price: 79, oldPrice: 99,
             image: "https://images.unsplash.com/photo-1518441902117-f0a6f2a42a0f?w=400&h=260&fit=crop",
             badge: "🔊 SONIDO CLARO"
         },
         {
-            id: 10,
-            type: "impresoras",
-            name: "PrintMax EcoTank",
-            category: "Impresora",
+            id: 10, type: "impresoras",
+            name: "PrintMax EcoTank", category: "Impresora",
             specs: "Wi‑Fi · Escáner · Dúplex · Bajo costo por página",
             description: "Impresora para hogar y oficina con tanque de tinta y conectividad inalámbrica.",
             features: ["Wi‑Fi", "Escáner", "Dúplex", "EcoTank"],
-            price: 219,
-            oldPrice: 259,
+            price: 219, oldPrice: 259,
             image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=260&fit=crop",
             badge: "🖨️ OFICINA"
         },
         {
-            id: 11,
-            type: "sillas",
-            name: "Gamer Chair Nitro",
-            category: "Silla gamer",
+            id: 11, type: "sillas",
+            name: "Gamer Chair Nitro", category: "Silla gamer",
             specs: "Ergonómica · Reclinable · Soporte lumbar · 160°",
             description: "Silla cómoda para largas sesiones frente a la PC, con estilo gamer limpio.",
             features: ["Ergonómica", "Reclinable 160°", "Soporte lumbar", "Reposabrazos"],
-            price: 179,
-            oldPrice: 229,
+            price: 179, oldPrice: 229,
             image: "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&h=260&fit=crop",
             badge: "🪑 COMODIDAD"
         }
     ];
 
+    // Cargar productos desde admin (localStorage) o usar los default
+    let products = (() => {
+        try {
+            const saved = JSON.parse(localStorage.getItem('sm_products'));
+            return Array.isArray(saved) && saved.length ? saved : [...DEFAULT_PRODUCTS];
+        } catch { return [...DEFAULT_PRODUCTS]; }
+    })();
+
+    // ─────────────────────────────────────────────
+    // ESTADO
+    // ─────────────────────────────────────────────
     let cart = [];
     let activeFilter = 'all';
-
-    const cartCounterSpan = document.getElementById('cartCounter');
-    const productGrid = document.getElementById('productGrid');
-    const cartModal = document.getElementById('cartModal');
-    const productModal = document.getElementById('productModal');
-    const openCartBtn = document.getElementById('openCartBtn');
-    const closeCartBtn = document.getElementById('closeCartBtn');
-    const closeProductBtn = document.getElementById('closeProductBtn');
-    const cartItemsContainer = document.getElementById('cartItemsContainer');
-    const cartTotalAmountSpan = document.getElementById('cartTotalAmount');
-    const productDetailContainer = document.getElementById('productDetailContainer');
-    const toastDiv = document.getElementById('toastMsg');
-    const toastTextSpan = document.getElementById('toastText');
-    const categoryBar = document.getElementById('categoryBar');
     let toastTimeout = null;
+
+    // ─────────────────────────────────────────────
+    // REFERENCIAS DOM
+    // ─────────────────────────────────────────────
+    const cartCounterSpan      = document.getElementById('cartCounter');
+    const productGrid          = document.getElementById('productGrid');
+    const cartModal            = document.getElementById('cartModal');
+    const productModal         = document.getElementById('productModal');
+    const openCartBtn          = document.getElementById('openCartBtn');
+    const closeCartBtn         = document.getElementById('closeCartBtn');
+    const closeProductBtn      = document.getElementById('closeProductBtn');
+    const cartItemsContainer   = document.getElementById('cartItemsContainer');
+    const cartTotalAmountSpan  = document.getElementById('cartTotalAmount');
+    const productDetailContainer = document.getElementById('productDetailContainer');
+    const toastDiv             = document.getElementById('toastMsg');
+    const toastTextSpan        = document.getElementById('toastText');
+    const categoryBar          = document.getElementById('categoryBar');
+    const sectionLabel         = document.getElementById('sectionLabel');
+
+    // ─────────────────────────────────────────────
+    // UTILIDADES
+    // ─────────────────────────────────────────────
 
     function money(value) {
         return `$${Number(value).toLocaleString()} USD`;
     }
 
+    // MEJORA #3: sanitización para prevenir XSS
+    function sanitize(str) {
+        const el = document.createElement('div');
+        el.textContent = str;
+        return el.innerHTML;
+    }
+
     function showToast(message, isError = false) {
         if (toastTimeout) clearTimeout(toastTimeout);
-        toastTextSpan.innerText = message;
+        toastTextSpan.textContent = message;
         toastDiv.classList.add('show');
         toastDiv.style.borderLeftColor = isError ? '#f97316' : '#3b82f6';
         toastTimeout = setTimeout(() => toastDiv.classList.remove('show'), 2200);
     }
+
+    // ─────────────────────────────────────────────
+    // PERSISTENCIA
+    // ─────────────────────────────────────────────
 
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -922,46 +926,60 @@
 
     function loadCart() {
         try {
-            const savedCart = JSON.parse(localStorage.getItem('cart'));
-            if (Array.isArray(savedCart)) cart = savedCart;
+            const saved = JSON.parse(localStorage.getItem('cart'));
+            if (Array.isArray(saved)) cart = saved;
         } catch (e) {
             cart = [];
         }
     }
 
+    // ─────────────────────────────────────────────
+    // TOTALES — MEJORA #4: llamada única, sin duplicados
+    // ─────────────────────────────────────────────
+
     function recalcCartTotals() {
         const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
         const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-        cartCounterSpan.innerText = count;
-        cartTotalAmountSpan.innerText = money(total);
+        cartCounterSpan.textContent = count;
+        cartTotalAmountSpan.textContent = money(total);
         return { total, count };
     }
+
+    // ─────────────────────────────────────────────
+    // CARRITO
+    // ─────────────────────────────────────────────
 
     function addToCart(product) {
         const existing = cart.find(item => item.id === product.id);
         if (existing) {
             existing.quantity += 1;
         } else {
-            cart.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                quantity: 1
-            });
+            cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
         }
         saveCart();
-        recalcCartTotals();
-        renderCartModal();
+        renderCartModal();               // renderCartModal ya llama recalcCartTotals internamente
         showToast(`➕ ${product.name} agregado al carrito`);
-        cartCounterSpan.style.transform = 'scale(1.2)';
+        cartCounterSpan.style.transform = 'scale(1.3)';
         setTimeout(() => { cartCounterSpan.style.transform = ''; }, 200);
+    }
+
+    // MEJORA #5: función para cambiar cantidad (+/-)
+    function changeQty(index, delta) {
+        if (!cart[index]) return;
+        cart[index].quantity += delta;
+        if (cart[index].quantity <= 0) {
+            removeFromCart(index);
+            return;
+        }
+        saveCart();
+        renderCartModal();
     }
 
     function removeFromCart(index) {
         const removed = cart[index];
+        if (!removed) return;
         cart.splice(index, 1);
         saveCart();
-        recalcCartTotals();
         renderCartModal();
         showToast(`❌ ${removed.name} eliminado del carrito`);
     }
@@ -971,27 +989,41 @@
 
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = `<div class="empty-cart-msg">🛒 Tu carrito está vacío<br>¡Agrega productos increíbles!</div>`;
-            cartTotalAmountSpan.innerText = money(0);
-            cartCounterSpan.innerText = 0;
+            recalcCartTotals();
             return;
         }
 
+        // MEJORA #3: usamos sanitize() en los datos de usuario antes de insertar en el DOM
         cartItemsContainer.innerHTML = cart.map((item, idx) => `
             <div class="cart-item">
                 <div class="cart-item-info">
-                    <h4>${item.name}</h4>
-                    <p>${money(item.price)} · Cantidad: ${item.quantity}</p>
+                    <h4>${sanitize(item.name)}</h4>
+                    <p>${money(item.price)} · Subtotal: ${money(item.price * item.quantity)}</p>
                 </div>
                 <div class="cart-item-actions">
-                    <button class="remove-item" data-index="${idx}" title="Eliminar"><i class="fas fa-trash-alt"></i></button>
+                    <button class="qty-btn" data-action="dec" data-index="${idx}" aria-label="Reducir cantidad">−</button>
+                    <span class="cart-qty" aria-label="Cantidad">${item.quantity}</span>
+                    <button class="qty-btn" data-action="inc" data-index="${idx}" aria-label="Aumentar cantidad">+</button>
+                    <button class="remove-item" data-index="${idx}" title="Eliminar producto" aria-label="Eliminar ${sanitize(item.name)}">
+                        <i class="fas fa-trash-alt" aria-hidden="true"></i>
+                    </button>
                 </div>
             </div>
         `).join('');
 
-        document.querySelectorAll('.remove-item').forEach(btn => {
+        // Delegación de eventos en el contenedor
+        cartItemsContainer.querySelectorAll('.qty-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                const index = parseInt(btn.getAttribute('data-index'), 10);
-                if (!Number.isNaN(index)) removeFromCart(index);
+                const idx = parseInt(btn.dataset.index, 10);
+                const delta = btn.dataset.action === 'inc' ? 1 : -1;
+                if (!Number.isNaN(idx)) changeQty(idx, delta);
+            });
+        });
+
+        cartItemsContainer.querySelectorAll('.remove-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const idx = parseInt(btn.dataset.index, 10);
+                if (!Number.isNaN(idx)) removeFromCart(idx);
             });
         });
 
@@ -1001,35 +1033,47 @@
     function openCart() {
         cartModal.style.display = 'flex';
         renderCartModal();
+        document.getElementById('closeCartBtn').focus();
     }
 
     function closeCart() {
         cartModal.style.display = 'none';
+        openCartBtn.focus();
     }
+
+    // ─────────────────────────────────────────────
+    // MODAL DE PRODUCTO
+    // ─────────────────────────────────────────────
 
     function openProduct(id) {
         const product = products.find(p => p.id === id);
         if (!product) return;
 
+        // MEJORA #3: usamos sanitize() en todos los campos de producto
+        const featuresHTML = product.features
+            .map(f => `<div class="detail-chip"><i class="fas fa-check" style="color:#3b82f6; margin-right:8px;" aria-hidden="true"></i>${sanitize(f)}</div>`)
+            .join('');
+
         productDetailContainer.innerHTML = `
             <div class="product-detail">
                 <div>
-                    <img src="${product.image}" alt="${product.name}" class="product-detail-image">
+                    <img src="${sanitize(product.image)}" alt="${sanitize(product.name)}" class="product-detail-image">
                 </div>
                 <div>
-                    <span class="detail-badge">${product.badge}</span>
-                    <h2>${product.name}</h2>
-                    <div style="color:#93c5fd; font-weight:700; margin-bottom: 0.3rem;">${product.category}</div>
-                    <div class="detail-specs">${product.description}</div>
-                    <div class="detail-specs"><strong>Especificaciones:</strong><br>${product.specs}</div>
-                    <div class="detail-price">${money(product.price)} <span class="detail-old">${money(product.oldPrice)}</span></div>
-
-                    <div class="detail-list">
-                        ${product.features.map(f => `<div class="detail-chip"><i class="fas fa-check" style="color:#3b82f6; margin-right:8px;"></i>${f}</div>`).join('')}
+                    <span class="detail-badge">${sanitize(product.badge)}</span>
+                    <h2>${sanitize(product.name)}</h2>
+                    <div class="detail-category">${sanitize(product.category)}</div>
+                    <div class="detail-specs">${sanitize(product.description)}</div>
+                    <div class="detail-specs"><strong>Especificaciones:</strong><br>${sanitize(product.specs)}</div>
+                    <div class="detail-price">
+                        ${money(product.price)}
+                        ${product.oldPrice > product.price ? `<span class="detail-old">${money(product.oldPrice)}</span>` : ''}
                     </div>
-
+                    <div class="detail-list">${featuresHTML}</div>
                     <div class="detail-actions">
-                        <button class="btn-primary" id="detailAddBtn"><i class="fas fa-cart-plus"></i> Añadir al carrito</button>
+                        <button class="btn-primary" id="detailAddBtn">
+                            <i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir al carrito
+                        </button>
                         <button class="detail-close" id="detailCloseBtn">Cerrar</button>
                     </div>
                 </div>
@@ -1040,11 +1084,16 @@
         document.getElementById('detailCloseBtn')?.addEventListener('click', closeProduct);
 
         productModal.style.display = 'flex';
+        document.getElementById('detailCloseBtn').focus();
     }
 
     function closeProduct() {
         productModal.style.display = 'none';
     }
+
+    // ─────────────────────────────────────────────
+    // CHECKOUT — MEJORA #6: window.open en lugar de location.href
+    // ─────────────────────────────────────────────
 
     function checkout() {
         if (cart.length === 0) {
@@ -1060,43 +1109,59 @@
         message += `\nTotal: ${money(total)}`;
 
         const phone = '593991603927';
-       window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
 
         cart = [];
         saveCart();
-        recalcCartTotals();
         renderCartModal();
         closeCart();
         showToast('✅ Pedido preparado en WhatsApp');
     }
 
+    // ─────────────────────────────────────────────
+    // RENDER DE PRODUCTOS
+    // ─────────────────────────────────────────────
+
     function renderProducts(list = products) {
         if (!productGrid) return;
-
         productGrid.innerHTML = '';
+
+        if (list.length === 0) {
+            productGrid.innerHTML = `<p style="color:#64748b; padding: 2rem;">No hay productos en esta categoría.</p>`;
+            return;
+        }
+
         list.forEach((prod, idx) => {
             const card = document.createElement('div');
             card.className = 'product-card';
+            card.setAttribute('role', 'listitem');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', `${prod.name} - ${money(prod.price)}`);
             card.dataset.type = prod.type;
             card.style.animationDelay = `${idx * 0.05}s`;
+
+            // MEJORA #3: construimos el precio sin riesgo de XSS
+            const priceHTML = prod.oldPrice > prod.price
+                ? `${money(prod.price)} <small>${money(prod.oldPrice)}</small>`
+                : money(prod.price);
+
+            // MEJORA: inline styles movidos a clases CSS
             card.innerHTML = `
-                <div style="overflow:hidden; position:relative;">
-                    <img class="product-img" src="${prod.image}" alt="${prod.name}" loading="lazy">
-                    <span style="position:absolute; top:12px; left:12px; background:#2563ebcc; backdrop-filter:blur(4px); padding:4px 12px; border-radius:30px; font-size:0.7rem; font-weight:bold;">${prod.badge}</span>
+                <div class="product-img-wrapper">
+                    <img class="product-img" src="${sanitize(prod.image)}" alt="${sanitize(prod.name)}" loading="lazy">
+                    <span class="product-badge-overlay">${sanitize(prod.badge)}</span>
                 </div>
                 <div class="product-info">
                     <div class="product-title">
-                        <span>${prod.name}</span>
-                        <span class="badge">${prod.category}</span>
+                        <span>${sanitize(prod.name)}</span>
+                        <span class="badge">${sanitize(prod.category)}</span>
                     </div>
                     <div class="specs">
-                        <i class="fas fa-microchip"></i> ${prod.specs}
+                        <i class="fas fa-microchip" aria-hidden="true"></i> ${sanitize(prod.specs)}
                     </div>
-                    <div class="price">
-                        ${money(prod.price)} <small>${money(prod.oldPrice)}</small>
-                    </div>
-                    <button class="btn-add" data-id="${prod.id}">
-                        <i class="fas fa-cart-plus"></i> Añadir al carrito
+                    <div class="price">${priceHTML}</div>
+                    <button class="btn-add" data-id="${prod.id}" aria-label="Añadir ${sanitize(prod.name)} al carrito">
+                        <i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir al carrito
                     </button>
                 </div>
             `;
@@ -1106,13 +1171,22 @@
                 openProduct(prod.id);
             });
 
+            // Accesibilidad: abrir detalle con Enter/Space
+            card.addEventListener('keydown', (e) => {
+                if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.btn-add')) {
+                    e.preventDefault();
+                    openProduct(prod.id);
+                }
+            });
+
             productGrid.appendChild(card);
         });
 
-        document.querySelectorAll('.btn-add').forEach(btn => {
+        // Botones "Añadir al carrito"
+        productGrid.querySelectorAll('.btn-add').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                const productId = parseInt(btn.getAttribute('data-id'), 10);
+                const productId = parseInt(btn.dataset.id, 10);
                 const product = products.find(p => p.id === productId);
                 if (product) addToCart(product);
                 btn.style.transform = 'scale(0.96)';
@@ -1121,31 +1195,36 @@
         });
     }
 
+    // ─────────────────────────────────────────────
+    // FILTROS — MEJORA #7: nav y categorías sincronizados
+    // ─────────────────────────────────────────────
+
     function applyFilter(filter) {
         activeFilter = filter;
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.filter === filter);
         });
-
-        if (filter === 'all') {
-            renderProducts(products);
-            return;
-        }
-
-        renderProducts(products.filter(p => p.type === filter));
+        const filtered = filter === 'all' ? products : products.filter(p => p.type === filter);
+        renderProducts(filtered);
     }
 
-    function setActive(linkId) {
-    document.querySelectorAll('.nav-links a').forEach(a => {
-        a.classList.remove('active');
-    });
+    // MEJORA #8: nav activo + sincronización con filtro de categorías
+    function setActiveNav(linkId) {
+        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+        const el = document.getElementById(linkId);
+        if (el) el.classList.add('active');
+    }
 
-    document.getElementById(linkId).classList.add('active');
-}
+    // ─────────────────────────────────────────────
+    // EVENT LISTENERS
+    // ─────────────────────────────────────────────
 
     categoryBar.addEventListener('click', (e) => {
         const btn = e.target.closest('.category-btn');
         if (!btn) return;
+        // Desactiva el nav cuando el usuario filtra por categoría manualmente
+        document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+        document.getElementById('productosBtn').classList.add('active');
         applyFilter(btn.dataset.filter);
     });
 
@@ -1154,11 +1233,16 @@
     closeProductBtn.addEventListener('click', closeProduct);
     document.getElementById('checkoutBtn')?.addEventListener('click', checkout);
 
-    cartModal.addEventListener('click', (e) => {
-        if (e.target === cartModal) closeCart();
-    });
-    productModal.addEventListener('click', (e) => {
-        if (e.target === productModal) closeProduct();
+    // Cerrar modales al hacer click en el fondo
+    cartModal.addEventListener('click', (e) => { if (e.target === cartModal) closeCart(); });
+    productModal.addEventListener('click', (e) => { if (e.target === productModal) closeProduct(); });
+
+    // Cerrar con Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (productModal.style.display === 'flex') closeProduct();
+            else if (cartModal.style.display === 'flex') closeCart();
+        }
     });
 
     document.getElementById('exploreBtn')?.addEventListener('click', () => {
@@ -1166,41 +1250,69 @@
         showToast('🌟 Descubre nuestras PCs y accesorios');
     });
 
+    // NAV: Inicio
+    document.getElementById('inicioBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveNav('inicioBtn');
+        applyFilter('all');
+        sectionLabel.textContent = 'LO MÁS VENDIDO';
+    });
+
+    // NAV: Productos
+    document.getElementById('productosBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveNav('productosBtn');
+        applyFilter('all');
+        sectionLabel.textContent = 'TODOS LOS PRODUCTOS';
+        document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // NAV: Ofertas — MEJORA #7: también resetea el filtro de categorías
+    document.getElementById('ofertasBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        setActiveNav('ofertasBtn');
+        // Resetear categorías activas
+        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+        sectionLabel.textContent = '🔥 OFERTAS ESPECIALES';
+        const ofertas = products.filter(p => p.oldPrice && p.oldPrice > p.price);
+        renderProducts(ofertas);
+        document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // ─────────────────────────────────────────────
+    // SINCRONIZAR PORTADA DESDE ADMIN
+    // ─────────────────────────────────────────────
+    function applySavedHero() {
+        try {
+            const h = JSON.parse(localStorage.getItem('sm_hero'));
+            if (!h || typeof h !== 'object') return;
+            const h1 = document.querySelector('.hero-text h1');
+            if (h1 && (h.title1 || h.title2)) {
+                h1.innerHTML = `${sanitize(h.title1 || '')}<br>${sanitize(h.title2 || '')}`;
+            }
+            const sub = document.querySelector('.hero-text p');
+            if (sub && h.subtitle) sub.textContent = h.subtitle;
+            const cta = document.getElementById('exploreBtn');
+            if (cta && h.cta) {
+                cta.innerHTML = `<i class="fas fa-arrow-right" aria-hidden="true"></i> ${sanitize(h.cta)}`;
+            }
+            const img = document.querySelector('.hero-image img');
+            if (img && h.image) { img.src = h.image; img.alt = 'Portada de la tienda'; }
+        } catch (e) { /* sin cambios */ }
+    }
+
+    // ─────────────────────────────────────────────
+    // INIT — nav activo al cargar
+    // ─────────────────────────────────────────────
+    applySavedHero();
     loadCart();
     renderProducts();
     recalcCartTotals();
-    renderCartModal();
+    setActiveNav('inicioBtn');
 
     setTimeout(() => {
         showToast("✨ Star Media Computer's · Donde la tecnología brilla");
     }, 800);
-   document.getElementById('ofertasBtn')?.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    const ofertas = products.filter(p => p.oldPrice && p.oldPrice > p.price);
-
-    renderProducts(ofertas);
-    setActive('ofertasBtn');
-});
-
-
-// 🔵 INICIO
-document.getElementById('inicioBtn')?.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    renderProducts(products);
-    setActive('inicioBtn');
-});
-document.getElementById('productosBtn')?.addEventListener('click', (e) => {
-    e.preventDefault();
-
-    renderProducts(products);
-    setActive('productosBtn');
-
-    document.getElementById('products')?.scrollIntoView({
-        behavior: 'smooth'
-    });
-});
 </script>
 </body>
 </html>
