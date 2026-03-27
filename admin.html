@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Star Media Computer's</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg:       #070a10;
+            --surface:  #0d1117;
+            --card:     #111722;
+            --border:   #1c2535;
+            --border2:  #243044;
+            --accent:   #3b82f6;
+            --accent2:  #0ea5e9;
+            --success:  #22c55e;
+            --danger:   #ef4444;
+            --warn:     #f59e0b;
+            --text:     #e2e8f0;
+            --muted:    #64748b;
+            --muted2:   #94a3b8;
+            --font-head:'Syne', sans-serif;
+            --font-body:'DM Sans', sans-serif;
+        }
+
+        *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background: var(--surface); }
+        ::-webkit-scrollbar-thumb { background: var(--border2); border-radius:6px; }
+
+        /* ── LOGIN SCREEN ── */
+        #loginScreen {
+            position: fixed; inset:0; z-index:9999;
+            background: radial-gradient(ellipse at 30% 50%, #0d1f3c 0%, #070a10 70%);
+            display: flex; align-items:center; justify-content:center;
+        }
+        .login-box {
+            background: var(--card);
+            border: 1px solid var(--border2);
+            border-radius: 28px;
+            padding: 3rem 2.5rem;
+            width: min(420px, 92vw);
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
+            animation: fadeUp .5s ease both;
+        }
+        .login-logo {
+            font-family: var(--font-head);
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 0.4rem;
+            background: linear-gradient(135deg,#fff,#60a5fa);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+        }
+        .login-sub {
+            text-align:center; color:var(--muted); font-size:0.85rem; margin-bottom:2.5rem;
+        }
+        .login-box label {
+            display:block; font-size:0.78rem; font-weight:600;
+            color:var(--muted2); letter-spacing:.08em; text-transform:uppercase;
+            margin-bottom:.5rem;
+        }
+        .login-box input {
+            width:100%; background:var(--surface); border:1px solid var(--border2);
+            border-radius:14px; padding:13px 16px; color:var(--text);
+            font-family:var(--font-body); font-size:0.95rem;
+            margin-bottom:1.2rem; outline:none; transition: border-color .2s;
+        }
+        .login-box input:focus { border-color: var(--accent); }
+        .login-error {
+            background: rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.3);
+            color:#fca5a5; padding:10px 14px; border-radius:10px;
+            font-size:.85rem; margin-bottom:1rem; display:none;
+        }
+        .btn-login {
+            width:100%; background: linear-gradient(95deg,#2563eb,#0891b2);
+            border:none; border-radius:40px; padding:14px;
+            color:#fff; font-family:var(--font-head); font-size:1rem; font-weight:700;
+            cursor:pointer; transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 8px 20px rgba(37,99,235,.35);
+        }
+        .btn-login:hover { transform:translateY(-2px); box-shadow:0 14px 28px rgba(37,99,235,.4); }
+
+        /* ── LAYOUT ── */
+        #adminApp { display:none; min-height:100vh; }
+
+        .topbar {
+            position:sticky; top:0; z-index:100;
+            background: rgba(7,10,16,.85); backdrop-filter:blur(16px);
+            border-bottom:1px solid var(--border);
+            padding:.9rem 2rem;
+            display:flex; align-items:center; justify-content:space-between; gap:1rem;
+        }
+        .topbar-brand {
+            font-family:var(--font-head); font-size:1.1rem; font-weight:800;
+            background:linear-gradient(135deg,#fff,#60a5fa);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+            white-space:nowrap;
+        }
+        .topbar-right { display:flex; align-items:center; gap:1rem; }
+        .topbar-pill {
+            background:rgba(59,130,246,.15); border:1px solid rgba(59,130,246,.3);
+            color:#93c5fd; padding:5px 14px; border-radius:30px; font-size:.8rem; font-weight:600;
+        }
+        .btn-logout {
+            background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25);
+            color:#fca5a5; padding:7px 16px; border-radius:30px; font-size:.82rem;
+            font-weight:600; cursor:pointer; transition:.2s;
+        }
+        .btn-logout:hover { background:rgba(239,68,68,.25); }
+
+        .page { max-width:1300px; margin:0 auto; padding:2rem; }
+
+        /* ── TABS ── */
+        .tabs {
+            display:flex; gap:.5rem; margin-bottom:2rem; flex-wrap:wrap;
+        }
+        .tab-btn {
+            background:var(--card); border:1px solid var(--border);
+            color:var(--muted2); padding:10px 22px; border-radius:30px;
+            font-family:var(--font-head); font-size:.88rem; font-weight:700;
+            cursor:pointer; transition:.2s; display:flex; align-items:center; gap:8px;
+        }
+        .tab-btn:hover { border-color:var(--border2); color:var(--text); }
+        .tab-btn.active {
+            background: linear-gradient(95deg,#1d4ed8,#0369a1);
+            border-color:var(--accent); color:#fff;
+        }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; animation:fadeUp .35s ease both; }
+
+        /* ── STAT CARDS ── */
+        .stats-row {
+            display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+            gap:1.2rem; margin-bottom:2rem;
+        }
+        .stat-card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:20px; padding:1.4rem 1.6rem;
+            display:flex; align-items:center; gap:1rem;
+        }
+        .stat-icon {
+            width:46px; height:46px; border-radius:14px;
+            display:flex; align-items:center; justify-content:center;
+            font-size:1.3rem; flex-shrink:0;
+        }
+        .stat-icon.blue  { background:rgba(59,130,246,.15); color:#60a5fa; }
+        .stat-icon.green { background:rgba(34,197,94,.15);  color:#4ade80; }
+        .stat-icon.warn  { background:rgba(245,158,11,.15); color:#fbbf24; }
+        .stat-icon.red   { background:rgba(239,68,68,.15);  color:#f87171; }
+        .stat-val { font-family:var(--font-head); font-size:1.8rem; font-weight:800; line-height:1; }
+        .stat-label { color:var(--muted); font-size:.8rem; margin-top:3px; }
+
+        /* ── SECTION HEADER ── */
+        .sec-header {
+            display:flex; align-items:center; justify-content:space-between;
+            flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;
+        }
+        .sec-title {
+            font-family:var(--font-head); font-size:1.5rem; font-weight:800;
+            display:flex; align-items:center; gap:10px;
+            border-left:4px solid var(--accent); padding-left:14px;
+        }
+        .btn-primary {
+            background:linear-gradient(95deg,#2563eb,#0891b2);
+            border:none; border-radius:30px; padding:11px 22px;
+            color:#fff; font-family:var(--font-head); font-size:.88rem; font-weight:700;
+            cursor:pointer; display:flex; align-items:center; gap:8px;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow:0 6px 16px rgba(37,99,235,.3);
+        }
+        .btn-primary:hover { transform:translateY(-1px); box-shadow:0 10px 22px rgba(37,99,235,.4); }
+
+        /* ── PRODUCT TABLE ── */
+        .prod-table-wrap { overflow-x:auto; border-radius:20px; border:1px solid var(--border); }
+        table { width:100%; border-collapse:collapse; }
+        thead { background:var(--surface); }
+        th {
+            text-align:left; padding:14px 16px;
+            font-family:var(--font-head); font-size:.78rem; font-weight:700;
+            color:var(--muted); text-transform:uppercase; letter-spacing:.08em;
+            border-bottom:1px solid var(--border);
+        }
+        td { padding:13px 16px; border-bottom:1px solid var(--border); font-size:.92rem; vertical-align:middle; }
+        tr:last-child td { border-bottom:none; }
+        tr:hover td { background:rgba(255,255,255,.02); }
+
+        .prod-thumb {
+            width:52px; height:40px; object-fit:cover; border-radius:10px;
+            border:1px solid var(--border2);
+        }
+        .type-pill {
+            background:rgba(59,130,246,.1); color:#93c5fd;
+            padding:4px 10px; border-radius:20px; font-size:.75rem; font-weight:600;
+        }
+        .price-cell { font-family:var(--font-head); font-weight:700; color:#facc15; }
+        .old-price { color:var(--muted); text-decoration:line-through; font-size:.8rem; font-weight:400; margin-left:6px; }
+
+        .action-btns { display:flex; gap:8px; align-items:center; }
+        .btn-edit, .btn-del {
+            border:none; border-radius:20px; padding:7px 14px;
+            font-size:.8rem; font-weight:600; cursor:pointer; transition:.2s;
+            display:flex; align-items:center; gap:5px;
+        }
+        .btn-edit { background:rgba(59,130,246,.15); color:#93c5fd; border:1px solid rgba(59,130,246,.25); }
+        .btn-edit:hover { background:rgba(59,130,246,.3); }
+        .btn-del  { background:rgba(239,68,68,.1); color:#fca5a5; border:1px solid rgba(239,68,68,.2); }
+        .btn-del:hover  { background:rgba(239,68,68,.25); }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display:none; position:fixed; inset:0; z-index:500;
+            background:rgba(0,0,0,.75); backdrop-filter:blur(6px);
+            align-items:center; justify-content:center;
+        }
+        .modal-overlay.open { display:flex; }
+        .modal-box {
+            background:var(--card); border:1px solid var(--border2);
+            border-radius:28px; padding:2rem;
+            width:min(680px,95vw); max-height:90vh; overflow-y:auto;
+            box-shadow:0 40px 80px -20px rgba(0,0,0,.9);
+            animation:fadeUp .3s ease both;
+        }
+        .modal-header {
+            display:flex; justify-content:space-between; align-items:center;
+            margin-bottom:1.8rem;
+        }
+        .modal-title { font-family:var(--font-head); font-size:1.3rem; font-weight:800; }
+        .modal-close {
+            background:var(--surface); border:1px solid var(--border2);
+            color:var(--muted2); width:34px; height:34px; border-radius:50%;
+            cursor:pointer; font-size:1rem; transition:.2s;
+            display:flex; align-items:center; justify-content:center;
+        }
+        .modal-close:hover { background:rgba(239,68,68,.2); color:#f87171; border-color:rgba(239,68,68,.3); }
+
+        /* ── FORM ── */
+        .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.2rem; }
+        .form-grid.full { grid-template-columns:1fr; }
+        .form-group { display:flex; flex-direction:column; gap:.5rem; }
+        .form-group.span2 { grid-column:span 2; }
+        .form-group label {
+            font-size:.78rem; font-weight:600; color:var(--muted2);
+            text-transform:uppercase; letter-spacing:.07em;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background:var(--surface); border:1px solid var(--border2);
+            border-radius:12px; padding:11px 14px; color:var(--text);
+            font-family:var(--font-body); font-size:.92rem; outline:none;
+            transition:border-color .2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus { border-color:var(--accent); }
+        .form-group textarea { resize:vertical; min-height:80px; }
+        .form-group select option { background:var(--card); }
+
+        .img-preview-wrap {
+            border:2px dashed var(--border2); border-radius:14px; padding:1rem;
+            text-align:center; cursor:pointer; transition:.2s;
+            position:relative; overflow:hidden;
+        }
+        .img-preview-wrap:hover { border-color:var(--accent); background:rgba(59,130,246,.04); }
+        .img-preview-wrap img {
+            max-height:140px; border-radius:10px; object-fit:cover;
+            max-width:100%; display:block; margin:0 auto;
+        }
+        .img-preview-wrap .upload-hint {
+            color:var(--muted); font-size:.85rem; margin-top:.5rem;
+        }
+        #imgFileInput { display:none; }
+
+        .features-list { display:flex; flex-direction:column; gap:.5rem; }
+        .feature-row { display:flex; gap:.5rem; }
+        .feature-row input { flex:1; }
+        .btn-feature-del {
+            background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.2);
+            color:#f87171; border-radius:10px; padding:0 12px;
+            cursor:pointer; font-size:.9rem; transition:.2s;
+        }
+        .btn-feature-del:hover { background:rgba(239,68,68,.25); }
+        .btn-feature-add {
+            background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.2);
+            color:#93c5fd; border-radius:10px; padding:7px 14px;
+            cursor:pointer; font-size:.82rem; font-weight:600; transition:.2s;
+            margin-top:.3rem; align-self:flex-start;
+        }
+        .btn-feature-add:hover { background:rgba(59,130,246,.2); }
+
+        .modal-footer { display:flex; justify-content:flex-end; gap:.8rem; margin-top:1.8rem; }
+        .btn-cancel {
+            background:var(--surface); border:1px solid var(--border2);
+            color:var(--muted2); padding:11px 22px; border-radius:30px;
+            font-weight:600; cursor:pointer; transition:.2s;
+        }
+        .btn-cancel:hover { background:var(--border); color:var(--text); }
+        .btn-save {
+            background:linear-gradient(95deg,#2563eb,#0891b2);
+            border:none; border-radius:30px; padding:11px 28px;
+            color:#fff; font-family:var(--font-head); font-weight:700; font-size:.95rem;
+            cursor:pointer; transition:.2s; box-shadow:0 6px 16px rgba(37,99,235,.3);
+        }
+        .btn-save:hover { transform:translateY(-1px); box-shadow:0 10px 22px rgba(37,99,235,.4); }
+
+        /* ── CONFIRM DIALOG ── */
+        .confirm-box {
+            background:var(--card); border:1px solid var(--border2);
+            border-radius:22px; padding:2rem; width:min(380px,92vw);
+            text-align:center; animation:fadeUp .25s ease both;
+        }
+        .confirm-icon { font-size:2.5rem; margin-bottom:.8rem; }
+        .confirm-title { font-family:var(--font-head); font-size:1.2rem; font-weight:800; margin-bottom:.5rem; }
+        .confirm-msg { color:var(--muted2); font-size:.9rem; margin-bottom:1.5rem; line-height:1.5; }
+        .confirm-btns { display:flex; gap:.8rem; justify-content:center; }
+        .btn-confirm-del {
+            background:rgba(239,68,68,.15); border:1px solid rgba(239,68,68,.3);
+            color:#fca5a5; padding:10px 24px; border-radius:30px;
+            font-weight:700; cursor:pointer; transition:.2s;
+        }
+        .btn-confirm-del:hover { background:rgba(239,68,68,.3); }
+
+        /* ── HERO EDITOR ── */
+        .hero-editor-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+        .hero-preview-card {
+            background:var(--card); border:1px solid var(--border);
+            border-radius:20px; padding:1.5rem; position:relative; overflow:hidden;
+        }
+        .hero-preview-label {
+            font-size:.75rem; font-weight:700; color:var(--muted);
+            text-transform:uppercase; letter-spacing:.08em; margin-bottom:.8rem;
+        }
+        .hero-preview-img {
+            width:100%; border-radius:14px; object-fit:cover; height:180px;
+        }
+        .hero-preview-title {
+            font-family:var(--font-head); font-size:1.3rem; font-weight:800;
+            margin:.8rem 0 .3rem;
+            background:linear-gradient(to right,#fff,#90d0ff);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+        }
+        .hero-preview-sub { color:var(--muted2); font-size:.82rem; line-height:1.5; }
+
+        /* ── TOAST ── */
+        .toast {
+            position:fixed; bottom:28px; right:28px; z-index:9000;
+            background:rgba(13,17,23,.95); border-left:4px solid var(--accent);
+            border-radius:16px; padding:12px 22px;
+            color:#fff; font-weight:500; font-size:.9rem;
+            display:flex; align-items:center; gap:10px;
+            box-shadow:0 16px 32px -12px rgba(0,0,0,.8);
+            transform:translateX(420px); transition:transform .3s ease;
+            pointer-events:none; max-width:320px;
+        }
+        .toast.show { transform:translateX(0); }
+        .toast.success { border-left-color:var(--success); }
+        .toast.error   { border-left-color:var(--danger); }
+        .toast.warn    { border-left-color:var(--warn); }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            text-align:center; padding:4rem 2rem; color:var(--muted);
+        }
+        .empty-state i { font-size:3rem; opacity:.3; margin-bottom:1rem; display:block; }
+
+        /* ── SEARCH BAR ── */
+        .search-bar {
+            background:var(--card); border:1px solid var(--border2);
+            border-radius:14px; padding:10px 16px;
+            color:var(--text); font-family:var(--font-body); font-size:.92rem;
+            outline:none; width:260px; transition:border-color .2s;
+        }
+        .search-bar:focus { border-color:var(--accent); }
+        .search-wrap { display:flex; align-items:center; gap:.8rem; flex-wrap:wrap; }
+
+        @media(max-width:700px){
+            .form-grid { grid-template-columns:1fr; }
+            .form-group.span2 { grid-column:span 1; }
+            .hero-editor-grid { grid-template-columns:1fr; }
+            .page { padding:1rem; }
+            th, td { padding:10px 12px; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity:0; transform:translateY(16px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ════════════════════ LOGIN ════════════════════ -->
+<div id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">★ STAR MEDIA COMPUTER'S</div>
+        <div class="login-sub">Panel de Administración</div>
+        <div id="loginError" class="login-error">
+            <i class="fas fa-exclamation-circle"></i> Usuario o contraseña incorrectos
+        </div>
+        <label for="loginUser">Usuario</label>
+        <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+        <label for="loginPass">Contraseña</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+        <button class="btn-login" id="loginBtn">
+            <i class="fas fa-unlock-alt"></i> Ingresar al panel
+        </button>
+    </div>
+</div>
+
+<!-- ════════════════════ APP ════════════════════ -->
+<div id="adminApp">
+    <header class="topbar">
+        <div class="topbar-brand">★ STAR MEDIA · Admin</div>
+        <div class="topbar-right">
+            <span class="topbar-pill"><i class="fas fa-circle" style="color:#22c55e;font-size:.5rem;vertical-align:middle;margin-right:5px;"></i>Sesión activa</span>
+            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</button>
+        </div>
+    </header>
+
+    <div class="page">
+        <div class="tabs" id="tabBar">
+            <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-gauge-high"></i> Dashboard</button>
+            <button class="tab-btn" data-tab="products"><i class="fas fa-box"></i> Productos</button>
+            <button class="tab-btn" data-tab="hero"><i class="fas fa-image"></i> Portada</button>
+        </div>
+
+        <!-- ── DASHBOARD ── -->
+        <div class="tab-content active" id="tab-dashboard">
+            <div class="stats-row" id="statsRow"></div>
+            <div class="sec-header">
+                <div class="sec-title"><i class="fas fa-clock-rotate-left"></i> Últimos productos</div>
+            </div>
+            <div class="prod-table-wrap">
+                <table id="recentTable">
+                    <thead><tr>
+                        <th></th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Oferta</th>
+                    </tr></thead>
+                    <tbody id="recentBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── PRODUCTS ── -->
+        <div class="tab-content" id="tab-products">
+            <div class="sec-header">
+                <div class="sec-title"><i class="fas fa-box-open"></i> Todos los productos</div>
+                <div class="search-wrap">
+                    <input class="search-bar" type="text" id="searchInput" placeholder="🔍  Buscar producto...">
+                    <button class="btn-primary" id="addProductBtn">
+                        <i class="fas fa-plus"></i> Nuevo producto
+                    </button>
+                </div>
+            </div>
+            <div class="prod-table-wrap">
+                <table>
+                    <thead><tr>
+                        <th>Img</th><th>Nombre</th><th>Tipo</th><th>Precio</th><th>Precio anterior</th><th>Acciones</th>
+                    </tr></thead>
+                    <tbody id="productTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ── HERO EDITOR ── -->
+        <div class="tab-content" id="tab-hero">
+            <div class="sec-header">
+                <div class="sec-title"><i class="fas fa-palette"></i> Editor de portada</div>
+                <button class="btn-primary" id="saveHeroBtn"><i class="fas fa-save"></i> Guardar cambios</button>
+            </div>
+            <div class="hero-editor-grid">
+                <div style="display:flex;flex-direction:column;gap:1.2rem;">
+                    <div class="form-group">
+                        <label>Título principal (línea 1)</label>
+                        <input type="text" id="heroTitle1" placeholder="Potencia creativa.">
+                    </div>
+                    <div class="form-group">
+                        <label>Título principal (línea 2)</label>
+                        <input type="text" id="heroTitle2" placeholder="Rendimiento sin límites.">
+                    </div>
+                    <div class="form-group">
+                        <label>Subtítulo / descripción</label>
+                        <textarea id="heroSubtitle" rows="3" placeholder="Descripción de la tienda..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Texto del botón CTA</label>
+                        <input type="text" id="heroCta" placeholder="Explorar colección">
+                    </div>
+                    <div class="form-group">
+                        <label>URL de imagen de portada</label>
+                        <input type="text" id="heroImageUrl" placeholder="https://...">
+                    </div>
+                    <div class="img-preview-wrap" id="heroImgDropZone" title="Click para subir imagen local">
+                        <img id="heroImgPreview" src="" alt="preview portada" style="display:none;">
+                        <div class="upload-hint" id="heroUploadHint">
+                            <i class="fas fa-cloud-arrow-up" style="font-size:1.6rem;margin-bottom:.4rem;display:block;color:var(--muted);"></i>
+                            Click para subir imagen local (o pega una URL arriba)
+                        </div>
+                        <input type="file" id="heroFileInput" accept="image/*" style="display:none;">
+                    </div>
+                </div>
+                <div>
+                    <div class="hero-preview-card">
+                        <div class="hero-preview-label">Vista previa</div>
+                        <img id="heroPreviewImg" class="hero-preview-img"
+                            src="https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&h=400&fit=crop"
+                            alt="portada preview">
+                        <div class="hero-preview-title" id="heroPreviewTitle">Potencia creativa.<br>Rendimiento sin límites.</div>
+                        <div class="hero-preview-sub" id="heroPreviewSub">En Star Media Computer's encuentras laptops, monitores, periféricos y equipos para creadores.</div>
+                        <div style="margin-top:.8rem;">
+                            <span style="background:linear-gradient(95deg,#2563eb,#0891b2);color:#fff;padding:7px 18px;border-radius:30px;font-size:.82rem;font-weight:700;" id="heroPreviewCta">Explorar colección</span>
+                        </div>
+                    </div>
+                    <div style="margin-top:1rem;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem;">
+                        <p style="font-size:.82rem;color:var(--muted2);line-height:1.6;">
+                            <i class="fas fa-circle-info" style="color:var(--accent);margin-right:6px;"></i>
+                            Los cambios de portada se guardan en <code style="background:var(--surface);padding:2px 6px;border-radius:6px;font-size:.78rem;">localStorage</code> y se aplican automáticamente en <strong>index.html</strong> al recargar (siempre que el <code style="background:var(--surface);padding:2px 6px;border-radius:6px;font-size:.78rem;">index.html</code> tenga el script de sincronización incluido).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── PRODUCT MODAL ── -->
+<div class="modal-overlay" id="productModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">Nuevo producto</div>
+            <button class="modal-close" id="closeModalBtn" aria-label="Cerrar"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Nombre *</label>
+                <input type="text" id="fName" placeholder="Ej: AERO X9 GT">
+            </div>
+            <div class="form-group">
+                <label>Categoría (badge) *</label>
+                <input type="text" id="fCategory" placeholder="Ej: Gaming Laptop">
+            </div>
+            <div class="form-group">
+                <label>Tipo (filtro) *</label>
+                <select id="fType">
+                    <option value="laptops">Laptops</option>
+                    <option value="desktops">Desktops</option>
+                    <option value="monitores">Monitores</option>
+                    <option value="perifericos">Periféricos</option>
+                    <option value="parlantes">Parlantes</option>
+                    <option value="impresoras">Impresoras</option>
+                    <option value="sillas">Sillas gamer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Badge (emoji + texto)</label>
+                <input type="text" id="fBadge" placeholder="🔥 TOP GAMING">
+            </div>
+            <div class="form-group">
+                <label>Precio actual (USD) *</label>
+                <input type="number" id="fPrice" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label>Precio anterior (USD)</label>
+                <input type="number" id="fOldPrice" min="0" step="0.01" placeholder="0.00 (opcional)">
+            </div>
+            <div class="form-group span2">
+                <label>Especificaciones</label>
+                <input type="text" id="fSpecs" placeholder="Intel i9 · RTX 4090 · 32GB · 1TB">
+            </div>
+            <div class="form-group span2">
+                <label>Descripción</label>
+                <textarea id="fDescription" placeholder="Descripción del producto..."></textarea>
+            </div>
+            <div class="form-group span2">
+                <label>Imagen del producto</label>
+                <div class="img-preview-wrap" id="prodImgDropZone" title="Click para subir imagen">
+                    <img id="prodImgPreview" src="" alt="preview" style="display:none;">
+                    <div class="upload-hint" id="prodUploadHint">
+                        <i class="fas fa-image" style="font-size:1.4rem;margin-bottom:.4rem;display:block;color:var(--muted);"></i>
+                        Click para subir imagen desde tu dispositivo
+                    </div>
+                    <input type="file" id="prodFileInput" accept="image/*" style="display:none;">
+                </div>
+                <input type="text" id="fImage" placeholder="O pega una URL de imagen aquí" style="margin-top:.5rem;">
+            </div>
+            <div class="form-group span2">
+                <label>Características</label>
+                <div class="features-list" id="featuresList"></div>
+                <button class="btn-feature-add" id="addFeatureBtn" type="button">
+                    <i class="fas fa-plus"></i> Agregar característica
+                </button>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-cancel" id="cancelModalBtn">Cancelar</button>
+            <button class="btn-save" id="saveProductBtn"><i class="fas fa-save"></i> Guardar producto</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── CONFIRM DELETE ── -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="confirm-box">
+        <div class="confirm-icon">🗑️</div>
+        <div class="confirm-title">¿Eliminar producto?</div>
+        <div class="confirm-msg" id="confirmMsg">Esta acción no se puede deshacer.</div>
+        <div class="confirm-btns">
+            <button class="btn-cancel" id="cancelConfirmBtn">Cancelar</button>
+            <button class="btn-confirm-del" id="confirmDelBtn"><i class="fas fa-trash"></i> Sí, eliminar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle" id="toastIcon"></i>
+    <span id="toastText">Guardado</span>
+</div>
+
+<script>
+// ─── CREDENCIALES ───────────────────────────────
+const CREDENTIALS = { user: 'admin', pass: 'starmedia2026' };
+
+// ─── PRODUCTOS DEFAULT ──────────────────────────
+const DEFAULT_PRODUCTS = [
+    { id:1,  type:"laptops",   name:"AERO X9 GT",        category:"Gaming Laptop",        specs:"Intel i9-14900HX · RTX 4090 · 32GB DDR5 · 1TB NVMe · 240Hz", description:"Potencia extrema para gaming competitivo, edición pesada y trabajo creativo sin cuello de botella.", features:["Pantalla 240Hz","Refrigeración avanzada","Teclado RGB","Carga rápida"], price:2899, oldPrice:3199, image:"https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=260&fit=crop", badge:"🔥 TOP GAMING" },
+    { id:2,  type:"laptops",   name:"ZenBook Pro Duo",   category:"Ultrabook Creativo",   specs:"Intel Ultra 9 · RTX 4070 · 32GB · 2TB SSD · Pantalla OLED 4K", description:"Pensada para diseño, multitarea y productividad seria con doble pantalla y acabado premium.", features:["OLED 4K","Doble pantalla","2TB SSD","Alto rendimiento"], price:2399, oldPrice:2699, image:"https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=260&fit=crop", badge:"✨ EDICIÓN LIMITADA" },
+    { id:3,  type:"desktops",  name:"Vortex Titan",      category:"Desktop Workstation",  specs:"Ryzen Threadripper · RTX 5090 · 64GB RAM · 4TB M.2", description:"Una estación de trabajo pensada para cargas extremas, render y producción profesional.", features:["64GB RAM","4TB M.2","Fuente modular","Enfriamiento premium"], price:4599, oldPrice:5299, image:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&h=260&fit=crop", badge:"🚀 RENDIMIENTO EXTREMO" },
+    { id:4,  type:"laptops",   name:"Edgebook 14 Air",   category:"Ultra Ligera",         specs:"Snapdragon X Elite · 16GB · 1TB · Batería 18h · 1.1kg", description:"Ligera, silenciosa y eficiente. Ideal para estudiar, trabajo móvil y jornadas largas.", features:["18 horas de batería","1.1 kg","1TB SSD","Portabilidad total"], price:1199, oldPrice:1499, image:"https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=260&fit=crop", badge:"⚡ EFICIENCIA TOTAL" },
+    { id:5,  type:"desktops",  name:"Nebula Studio",     category:"All-in-One Creator",   specs:"M3 Ultra · 48GB unificada · 2TB SSD · Pantalla 32\" 6K", description:"Todo en uno para creadores y diseñadores que quieren potencia con estética limpia.", features:["Pantalla 6K","48GB unificada","2TB SSD","Diseño minimalista"], price:3899, oldPrice:4299, image:"https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=400&h=260&fit=crop", badge:"🎨 PARA DISEÑADORES" },
+    { id:6,  type:"desktops",  name:"Phantom S-19",      category:"Gaming Desktop",       specs:"Ryzen 9 9950X · RTX 5080 · 32GB RGB · 2TB PCIe 5.0", description:"PC gamer de alto nivel para jugar, transmitir y trabajar con fluidez brutal.", features:["32GB RGB","PCIe 5.0","Gaming extremo","Estética premium"], price:3199, oldPrice:3699, image:"https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=260&fit=crop", badge:"💀 EDICIÓN PHANTOM" },
+    { id:7,  type:"monitores", name:"Alpha View 27 Pro", category:"Monitor",              specs:"27'' IPS · 165Hz · 2K · HDR · 1ms", description:"Monitor ideal para gaming, edición y uso diario con colores vivos y respuesta rápida.", features:["2K QHD","165Hz","1ms","HDR"], price:329, oldPrice:389, image:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=260&fit=crop", badge:"🖥️ MONITOR PRO" },
+    { id:8,  type:"perifericos",name:"Pulse X Keyboard", category:"Periférico",           specs:"Mecánico RGB · Switches táctiles · Anti-ghosting · USB-C", description:"Teclado mecánico con sensación premium, retroiluminación y respuesta precisa.", features:["Switches táctiles","RGB","Anti-ghosting","USB-C"], price:89, oldPrice:109, image:"https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=400&h=260&fit=crop", badge:"⌨️ MECÁNICO" },
+    { id:9,  type:"parlantes",  name:"SoundCore Duo",    category:"Parlantes",            specs:"2.1 Stereo · Bluetooth 5.3 · Graves profundos · USB", description:"Sonido compacto con cuerpo, ideal para escritorio, música y juegos casuales.", features:["Bluetooth 5.3","2.1 stereo","Graves potentes","Diseño compacto"], price:79, oldPrice:99, image:"https://images.unsplash.com/photo-1518441902117-f0a6f2a42a0f?w=400&h=260&fit=crop", badge:"🔊 SONIDO CLARO" },
+    { id:10, type:"impresoras", name:"PrintMax EcoTank", category:"Impresora",            specs:"Wi‑Fi · Escáner · Dúplex · Bajo costo por página", description:"Impresora para hogar y oficina con tanque de tinta y conectividad inalámbrica.", features:["Wi‑Fi","Escáner","Dúplex","EcoTank"], price:219, oldPrice:259, image:"https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=260&fit=crop", badge:"🖨️ OFICINA" },
+    { id:11, type:"sillas",     name:"Gamer Chair Nitro",category:"Silla gamer",          specs:"Ergonómica · Reclinable · Soporte lumbar · 160°", description:"Silla cómoda para largas sesiones frente a la PC, con estilo gamer limpio.", features:["Ergonómica","Reclinable 160°","Soporte lumbar","Reposabrazos"], price:179, oldPrice:229, image:"https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&h=260&fit=crop", badge:"🪑 COMODIDAD" }
+];
+
+const DEFAULT_HERO = {
+    title1: "Potencia creativa.",
+    title2: "Rendimiento sin límites.",
+    subtitle: "En Star Media Computer's encuentras laptops, monitores, periféricos y equipos para creadores. Calidad profesional, diseño limpio y soporte experto.",
+    cta: "Explorar colección",
+    image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&h=400&fit=crop"
+};
+
+// ─── ESTADO ─────────────────────────────────────
+let products = [];
+let heroData  = {};
+let editingId = null;
+let deletingId = null;
+let toastTimer = null;
+let tempProdImage = null; // base64 para imagen subida localmente
+let tempHeroImage = null;
+
+// ─── PERSISTENCIA ───────────────────────────────
+function loadData() {
+    try {
+        const p = JSON.parse(localStorage.getItem('sm_products'));
+        products = Array.isArray(p) ? p : [...DEFAULT_PRODUCTS];
+    } catch { products = [...DEFAULT_PRODUCTS]; }
+    try {
+        const h = JSON.parse(localStorage.getItem('sm_hero'));
+        heroData = h && typeof h === 'object' ? h : {...DEFAULT_HERO};
+    } catch { heroData = {...DEFAULT_HERO}; }
+}
+
+function saveProducts() { localStorage.setItem('sm_products', JSON.stringify(products)); }
+function saveHero()     { localStorage.setItem('sm_hero',     JSON.stringify(heroData)); }
+
+// ─── TOAST ──────────────────────────────────────
+function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    const icons = { success:'fa-check-circle', error:'fa-circle-xmark', warn:'fa-triangle-exclamation' };
+    const colors = { success:'#22c55e', error:'#ef4444', warn:'#f59e0b' };
+    document.getElementById('toastText').textContent = msg;
+    document.getElementById('toastIcon').className = `fas ${icons[type]||icons.success}`;
+    document.getElementById('toastIcon').style.color = colors[type]||colors.success;
+    t.className = `toast show ${type}`;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── LOGIN ──────────────────────────────────────
+document.getElementById('loginBtn').addEventListener('click', tryLogin);
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+
+function tryLogin() {
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value;
+    const err = document.getElementById('loginError');
+    if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminApp').style.display = 'block';
+        loadData();
+        renderAll();
+        loadHeroForm();
+    } else {
+        err.style.display = 'flex';
+        document.getElementById('loginPass').value = '';
+        document.getElementById('loginPass').focus();
+        setTimeout(() => err.style.display = 'none', 3500);
+    }
+}
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    document.getElementById('adminApp').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+});
+
+// ─── TABS ────────────────────────────────────────
+document.getElementById('tabBar').addEventListener('click', e => {
+    const btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+});
+
+// ─── RENDER ──────────────────────────────────────
+function money(v) { return `$${Number(v).toLocaleString()}`; }
+
+function renderAll() {
+    renderStats();
+    renderRecentTable();
+    renderProductTable(products);
+}
+
+function renderStats() {
+    const ofertas = products.filter(p => p.oldPrice > p.price).length;
+    const tipos   = [...new Set(products.map(p => p.type))].length;
+    const avgPrice= products.length ? Math.round(products.reduce((s,p)=>s+p.price,0)/products.length) : 0;
+
+    document.getElementById('statsRow').innerHTML = `
+        <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-box"></i></div><div><div class="stat-val">${products.length}</div><div class="stat-label">Productos totales</div></div></div>
+        <div class="stat-card"><div class="stat-icon green"><i class="fas fa-tag"></i></div><div><div class="stat-val">${ofertas}</div><div class="stat-label">En oferta</div></div></div>
+        <div class="stat-card"><div class="stat-icon warn"><i class="fas fa-layer-group"></i></div><div><div class="stat-val">${tipos}</div><div class="stat-label">Categorías activas</div></div></div>
+        <div class="stat-card"><div class="stat-icon red"><i class="fas fa-dollar-sign"></i></div><div><div class="stat-val">${money(avgPrice)}</div><div class="stat-label">Precio promedio</div></div></div>
+    `;
+}
+
+function renderRecentTable() {
+    const last5 = [...products].reverse().slice(0, 5);
+    document.getElementById('recentBody').innerHTML = last5.map(p => `
+        <tr>
+            <td><img class="prod-thumb" src="${p.image}" alt="${p.name}" onerror="this.style.opacity='.3'"></td>
+            <td><strong>${p.name}</strong></td>
+            <td><span class="type-pill">${p.type}</span></td>
+            <td class="price-cell">${money(p.price)}</td>
+            <td>${p.oldPrice > p.price ? `<span style="color:#4ade80;font-size:.8rem;font-weight:700;">▼ ${money(p.oldPrice - p.price)} desc.</span>` : '<span style="color:var(--muted);font-size:.8rem;">—</span>'}</td>
+        </tr>
+    `).join('');
+}
+
+function renderProductTable(list) {
+    const tbody = document.getElementById('productTableBody');
+    if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fas fa-box-open"></i>No hay productos</div></td></tr>`;
+        return;
+    }
+    tbody.innerHTML = list.map(p => `
+        <tr>
+            <td><img class="prod-thumb" src="${p.image}" alt="${p.name}" onerror="this.style.opacity='.3'"></td>
+            <td><strong>${p.name}</strong><br><span style="color:var(--muted);font-size:.78rem;">${p.category}</span></td>
+            <td><span class="type-pill">${p.type}</span></td>
+            <td class="price-cell">${money(p.price)}</td>
+            <td class="price-cell" style="color:var(--muted);text-decoration:line-through;font-weight:400;">${p.oldPrice ? money(p.oldPrice) : '—'}</td>
+            <td>
+                <div class="action-btns">
+                    <button class="btn-edit" data-id="${p.id}"><i class="fas fa-pen"></i> Editar</button>
+                    <button class="btn-del"  data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+
+    tbody.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(parseInt(btn.dataset.id)));
+    });
+    tbody.querySelectorAll('.btn-del').forEach(btn => {
+        btn.addEventListener('click', () => openConfirm(parseInt(btn.dataset.id)));
+    });
+}
+
+// ─── BÚSQUEDA ────────────────────────────────────
+document.getElementById('searchInput').addEventListener('input', e => {
+    const q = e.target.value.trim().toLowerCase();
+    const filtered = q ? products.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.type.toLowerCase().includes(q)
+    ) : products;
+    renderProductTable(filtered);
+});
+
+// ─── MODAL PRODUCTO ──────────────────────────────
+function openAddModal() {
+    editingId = null;
+    tempProdImage = null;
+    document.getElementById('modalTitle').textContent = 'Nuevo producto';
+    clearForm();
+    document.getElementById('productModal').classList.add('open');
+    document.getElementById('fName').focus();
+}
+
+function openEditModal(id) {
+    const prod = products.find(p => p.id === id);
+    if (!prod) return;
+    editingId = id;
+    tempProdImage = null;
+    document.getElementById('modalTitle').textContent = 'Editar producto';
+    fillForm(prod);
+    document.getElementById('productModal').classList.add('open');
+    document.getElementById('fName').focus();
+}
+
+function closeModal() {
+    document.getElementById('productModal').classList.remove('open');
+    editingId = null;
+    tempProdImage = null;
+}
+
+function clearForm() {
+    ['fName','fCategory','fBadge','fSpecs','fDescription','fImage'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('fPrice').value = '';
+    document.getElementById('fOldPrice').value = '';
+    document.getElementById('fType').value = 'laptops';
+    document.getElementById('featuresList').innerHTML = '';
+    setFormImage('');
+    addFeatureRow('');
+}
+
+function fillForm(prod) {
+    document.getElementById('fName').value        = prod.name || '';
+    document.getElementById('fCategory').value    = prod.category || '';
+    document.getElementById('fBadge').value       = prod.badge || '';
+    document.getElementById('fSpecs').value       = prod.specs || '';
+    document.getElementById('fDescription').value = prod.description || '';
+    document.getElementById('fPrice').value       = prod.price || '';
+    document.getElementById('fOldPrice').value    = prod.oldPrice || '';
+    document.getElementById('fType').value        = prod.type || 'laptops';
+    document.getElementById('fImage').value       = prod.image || '';
+    setFormImage(prod.image || '');
+    document.getElementById('featuresList').innerHTML = '';
+    (prod.features || []).forEach(f => addFeatureRow(f));
+    if (!(prod.features||[]).length) addFeatureRow('');
+}
+
+function setFormImage(src) {
+    const preview = document.getElementById('prodImgPreview');
+    const hint    = document.getElementById('prodUploadHint');
+    if (src) {
+        preview.src = src;
+        preview.style.display = 'block';
+        hint.style.display = 'none';
+    } else {
+        preview.style.display = 'none';
+        hint.style.display = 'block';
+    }
+}
+
+// Live preview image from URL input
+document.getElementById('fImage').addEventListener('input', e => {
+    const v = e.target.value.trim();
+    if (v) { tempProdImage = null; setFormImage(v); }
+});
+
+// Upload image from file
+document.getElementById('prodImgDropZone').addEventListener('click', () => document.getElementById('prodFileInput').click());
+document.getElementById('prodFileInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        tempProdImage = ev.target.result;
+        setFormImage(tempProdImage);
+        document.getElementById('fImage').value = '';
+    };
+    reader.readAsDataURL(file);
+});
+
+// Features
+function addFeatureRow(val='') {
+    const list = document.getElementById('featuresList');
+    const row  = document.createElement('div');
+    row.className = 'feature-row';
+    row.innerHTML = `<input type="text" placeholder="Ej: Pantalla 240Hz" value="${val}">
+        <button class="btn-feature-del" type="button" title="Eliminar"><i class="fas fa-times"></i></button>`;
+    row.querySelector('.btn-feature-del').addEventListener('click', () => row.remove());
+    list.appendChild(row);
+}
+
+document.getElementById('addFeatureBtn').addEventListener('click', () => addFeatureRow(''));
+
+// Save product
+document.getElementById('saveProductBtn').addEventListener('click', () => {
+    const name  = document.getElementById('fName').value.trim();
+    const price = parseFloat(document.getElementById('fPrice').value);
+    if (!name) { showToast('El nombre es obligatorio', 'error'); return; }
+    if (isNaN(price) || price < 0) { showToast('Ingresa un precio válido', 'error'); return; }
+
+    const features = [...document.querySelectorAll('#featuresList .feature-row input')]
+        .map(i => i.value.trim()).filter(Boolean);
+
+    const imageUrl = tempProdImage
+        || document.getElementById('fImage').value.trim()
+        || 'https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=400&h=260&fit=crop';
+
+    const data = {
+        name,
+        category: document.getElementById('fCategory').value.trim(),
+        type:     document.getElementById('fType').value,
+        badge:    document.getElementById('fBadge').value.trim(),
+        specs:    document.getElementById('fSpecs').value.trim(),
+        description: document.getElementById('fDescription').value.trim(),
+        price,
+        oldPrice: parseFloat(document.getElementById('fOldPrice').value) || price,
+        image:    imageUrl,
+        features
+    };
+
+    if (editingId !== null) {
+        const idx = products.findIndex(p => p.id === editingId);
+        if (idx !== -1) products[idx] = { ...products[idx], ...data };
+        showToast(`✅ "${name}" actualizado`);
+    } else {
+        const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({ id: newId, ...data });
+        showToast(`✅ "${name}" agregado`);
+    }
+
+    saveProducts();
+    renderAll();
+    closeModal();
+});
+
+// Cancel / close
+document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+document.getElementById('cancelModalBtn').addEventListener('click', closeModal);
+document.getElementById('productModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('productModal')) closeModal();
+});
+
+document.getElementById('addProductBtn').addEventListener('click', openAddModal);
+
+// ─── CONFIRMAR ELIMINACIÓN ───────────────────────
+function openConfirm(id) {
+    const prod = products.find(p => p.id === id);
+    if (!prod) return;
+    deletingId = id;
+    document.getElementById('confirmMsg').textContent = `¿Eliminar "${prod.name}"? Esta acción no se puede deshacer.`;
+    document.getElementById('confirmModal').classList.add('open');
+}
+
+document.getElementById('confirmDelBtn').addEventListener('click', () => {
+    if (deletingId === null) return;
+    const prod = products.find(p => p.id === deletingId);
+    products = products.filter(p => p.id !== deletingId);
+    saveProducts();
+    renderAll();
+    document.getElementById('confirmModal').classList.remove('open');
+    showToast(`🗑️ "${prod?.name}" eliminado`, 'warn');
+    deletingId = null;
+});
+
+document.getElementById('cancelConfirmBtn').addEventListener('click', () => {
+    document.getElementById('confirmModal').classList.remove('open');
+    deletingId = null;
+});
+document.getElementById('confirmModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('confirmModal')) {
+        document.getElementById('confirmModal').classList.remove('open');
+        deletingId = null;
+    }
+});
+
+// ─── HERO EDITOR ─────────────────────────────────
+function loadHeroForm() {
+    document.getElementById('heroTitle1').value   = heroData.title1   || DEFAULT_HERO.title1;
+    document.getElementById('heroTitle2').value   = heroData.title2   || DEFAULT_HERO.title2;
+    document.getElementById('heroSubtitle').value = heroData.subtitle || DEFAULT_HERO.subtitle;
+    document.getElementById('heroCta').value      = heroData.cta      || DEFAULT_HERO.cta;
+    document.getElementById('heroImageUrl').value = heroData.image    || DEFAULT_HERO.image;
+    updateHeroPreview();
+}
+
+function updateHeroPreview() {
+    const t1  = document.getElementById('heroTitle1').value   || DEFAULT_HERO.title1;
+    const t2  = document.getElementById('heroTitle2').value   || DEFAULT_HERO.title2;
+    const sub = document.getElementById('heroSubtitle').value || DEFAULT_HERO.subtitle;
+    const cta = document.getElementById('heroCta').value      || DEFAULT_HERO.cta;
+    const img = tempHeroImage || document.getElementById('heroImageUrl').value || DEFAULT_HERO.image;
+
+    document.getElementById('heroPreviewTitle').innerHTML = `${t1}<br>${t2}`;
+    document.getElementById('heroPreviewSub').textContent = sub;
+    document.getElementById('heroPreviewCta').textContent = cta;
+    document.getElementById('heroPreviewImg').src = img;
+
+    // Show upload preview
+    const hint = document.getElementById('heroUploadHint');
+    const prev = document.getElementById('heroImgPreview');
+    if (img) { prev.src = img; prev.style.display='block'; hint.style.display='none'; }
+    else      { prev.style.display='none'; hint.style.display='block'; }
+}
+
+['heroTitle1','heroTitle2','heroSubtitle','heroCta'].forEach(id => {
+    document.getElementById(id).addEventListener('input', updateHeroPreview);
+});
+document.getElementById('heroImageUrl').addEventListener('input', () => {
+    tempHeroImage = null;
+    updateHeroPreview();
+});
+
+// Upload hero image
+document.getElementById('heroImgDropZone').addEventListener('click', () => document.getElementById('heroFileInput').click());
+document.getElementById('heroFileInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        tempHeroImage = ev.target.result;
+        document.getElementById('heroImageUrl').value = '';
+        updateHeroPreview();
+    };
+    reader.readAsDataURL(file);
+});
+
+document.getElementById('saveHeroBtn').addEventListener('click', () => {
+    heroData = {
+        title1:   document.getElementById('heroTitle1').value.trim()   || DEFAULT_HERO.title1,
+        title2:   document.getElementById('heroTitle2').value.trim()   || DEFAULT_HERO.title2,
+        subtitle: document.getElementById('heroSubtitle').value.trim() || DEFAULT_HERO.subtitle,
+        cta:      document.getElementById('heroCta').value.trim()      || DEFAULT_HERO.cta,
+        image:    tempHeroImage || document.getElementById('heroImageUrl').value.trim() || DEFAULT_HERO.image
+    };
+    saveHero();
+    showToast('🎨 Portada guardada correctamente');
+});
+
+// ─── ESCAPE key ──────────────────────────────────
+document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if (document.getElementById('productModal').classList.contains('open')) closeModal();
+    if (document.getElementById('confirmModal').classList.contains('open')) {
+        document.getElementById('confirmModal').classList.remove('open');
+    }
+});
+</script>
+</body>
+</html>
