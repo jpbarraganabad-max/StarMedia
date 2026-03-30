@@ -738,173 +738,83 @@
     <span id="toastText">Producto añadido</span>
 </div>
 
-<script>
-    // ─────────────────────────────────────────────
-    // SINCRONIZACIÓN CON PANEL ADMIN
-    // Los productos y la portada se leen desde localStorage si el admin los guardó.
-    // ─────────────────────────────────────────────
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCnJ4vjMzJ9soVrKqSVegyWPK66IUb3QXs",
+        authDomain: "star-media-store.firebaseapp.com",
+        projectId: "star-media-store",
+        storageBucket: "star-media-store.firebasestorage.app",
+        messagingSenderId: "832599368232",
+        appId: "1:832599368232:web:418c05ca72e7ba581d0b1d",
+        measurementId: "G-G4BSNNLSVP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
 
     // ─────────────────────────────────────────────
-    // DATOS DEFAULT (se usan si el admin nunca guardó cambios)
+    // DATOS DEFAULT
     // ─────────────────────────────────────────────
     const DEFAULT_PRODUCTS = [
-        {
-            id: 1, type: "laptops",
-            name: "AERO X9 GT", category: "Gaming Laptop",
-            specs: "Intel i9-14900HX · RTX 4090 · 32GB DDR5 · 1TB NVMe · 240Hz",
-            description: "Potencia extrema para gaming competitivo, edición pesada y trabajo creativo sin cuello de botella.",
-            features: ["Pantalla 240Hz", "Refrigeración avanzada", "Teclado RGB", "Carga rápida"],
-            price: 2899, oldPrice: 3199,  // MEJORA #2: oldPrice corregido (era igual al price)
-            image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=260&fit=crop",
-            badge: "🔥 TOP GAMING"
-        },
-        {
-            id: 2, type: "laptops",
-            name: "ZenBook Pro Duo", category: "Ultrabook Creativo",
-            specs: "Intel Ultra 9 · RTX 4070 · 32GB · 2TB SSD · Pantalla OLED 4K",
-            description: "Pensada para diseño, multitarea y productividad seria con doble pantalla y acabado premium.",
-            features: ["OLED 4K", "Doble pantalla", "2TB SSD", "Alto rendimiento"],
-            price: 2399, oldPrice: 2699,  // MEJORA #2: oldPrice corregido
-            image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=260&fit=crop",
-            badge: "✨ EDICIÓN LIMITADA"
-        },
-        {
-            id: 3, type: "desktops",
-            name: "Vortex Titan", category: "Desktop Workstation",
-            specs: "Ryzen Threadripper · RTX 5090 · 64GB RAM · 4TB M.2",
-            description: "Una estación de trabajo pensada para cargas extremas, render y producción profesional.",
-            features: ["64GB RAM", "4TB M.2", "Fuente modular", "Enfriamiento premium"],
-            price: 4599, oldPrice: 5299,
-            image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&h=260&fit=crop",
-            badge: "🚀 RENDIMIENTO EXTREMO"
-        },
-        {
-            id: 4, type: "laptops",
-            name: "Edgebook 14 Air", category: "Ultra Ligera",
-            specs: "Snapdragon X Elite · 16GB · 1TB · Batería 18h · 1.1kg",
-            description: "Ligera, silenciosa y eficiente. Ideal para estudiar, trabajo móvil y jornadas largas.",
-            features: ["18 horas de batería", "1.1 kg", "1TB SSD", "Portabilidad total"],
-            price: 1199, oldPrice: 1499,
-            image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=260&fit=crop",
-            badge: "⚡ EFICIENCIA TOTAL"
-        },
-        {
-            id: 5, type: "desktops",
-            name: "Nebula Studio", category: "All-in-One Creator",
-            specs: "M3 Ultra · 48GB unificada · 2TB SSD · Pantalla 32\" 6K",
-            description: "Todo en uno para creadores y diseñadores que quieren potencia con estética limpia.",
-            features: ["Pantalla 6K", "48GB unificada", "2TB SSD", "Diseño minimalista"],
-            price: 3899, oldPrice: 4299,
-            image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=400&h=260&fit=crop",
-            badge: "🎨 PARA DISEÑADORES"
-        },
-        {
-            id: 6, type: "desktops",
-            name: "Phantom S-19", category: "Gaming Desktop",
-            specs: "Ryzen 9 9950X · RTX 5080 · 32GB RGB · 2TB PCIe 5.0",
-            description: "PC gamer de alto nivel para jugar, transmitir y trabajar con fluidez brutal.",
-            features: ["32GB RGB", "PCIe 5.0", "Gaming extremo", "Estética premium"],
-            price: 3199, oldPrice: 3699,
-            image: "https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=260&fit=crop",
-            badge: "💀 EDICIÓN PHANTOM"
-        },
-        {
-            id: 7, type: "monitores",
-            name: "Alpha View 27 Pro", category: "Monitor",
-            specs: "27'' IPS · 165Hz · 2K · HDR · 1ms",
-            description: "Monitor ideal para gaming, edición y uso diario con colores vivos y respuesta rápida.",
-            features: ["2K QHD", "165Hz", "1ms", "HDR"],
-            price: 329, oldPrice: 389,
-            image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=260&fit=crop",
-            badge: "🖥️ MONITOR PRO"
-        },
-        {
-            id: 8, type: "perifericos",
-            name: "Pulse X Keyboard", category: "Periférico",
-            specs: "Mecánico RGB · Switches táctiles · Anti-ghosting · USB-C",
-            description: "Teclado mecánico con sensación premium, retroiluminación y respuesta precisa.",
-            features: ["Switches táctiles", "RGB", "Anti-ghosting", "USB-C"],
-            price: 89, oldPrice: 109,
-            image: "https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=400&h=260&fit=crop",
-            badge: "⌨️ MECÁNICO"
-        },
-        {
-            id: 9, type: "parlantes",
-            name: "SoundCore Duo", category: "Parlantes",
-            specs: "2.1 Stereo · Bluetooth 5.3 · Graves profundos · USB",
-            description: "Sonido compacto con cuerpo, ideal para escritorio, música y juegos casuales.",
-            features: ["Bluetooth 5.3", "2.1 stereo", "Graves potentes", "Diseño compacto"],
-            price: 79, oldPrice: 99,
-            image: "https://images.unsplash.com/photo-1518441902117-f0a6f2a42a0f?w=400&h=260&fit=crop",
-            badge: "🔊 SONIDO CLARO"
-        },
-        {
-            id: 10, type: "impresoras",
-            name: "PrintMax EcoTank", category: "Impresora",
-            specs: "Wi‑Fi · Escáner · Dúplex · Bajo costo por página",
-            description: "Impresora para hogar y oficina con tanque de tinta y conectividad inalámbrica.",
-            features: ["Wi‑Fi", "Escáner", "Dúplex", "EcoTank"],
-            price: 219, oldPrice: 259,
-            image: "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=260&fit=crop",
-            badge: "🖨️ OFICINA"
-        },
-        {
-            id: 11, type: "sillas",
-            name: "Gamer Chair Nitro", category: "Silla gamer",
-            specs: "Ergonómica · Reclinable · Soporte lumbar · 160°",
-            description: "Silla cómoda para largas sesiones frente a la PC, con estilo gamer limpio.",
-            features: ["Ergonómica", "Reclinable 160°", "Soporte lumbar", "Reposabrazos"],
-            price: 179, oldPrice: 229,
-            image: "https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&h=260&fit=crop",
-            badge: "🪑 COMODIDAD"
-        }
+        { id:1,  type:"laptops",    name:"AERO X9 GT",        category:"Gaming Laptop",       specs:"Intel i9-14900HX · RTX 4090 · 32GB DDR5 · 1TB NVMe · 240Hz", description:"Potencia extrema para gaming competitivo, edición pesada y trabajo creativo sin cuello de botella.", features:["Pantalla 240Hz","Refrigeración avanzada","Teclado RGB","Carga rápida"], price:2899, oldPrice:3199, image:"https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=260&fit=crop", badge:"🔥 TOP GAMING" },
+        { id:2,  type:"laptops",    name:"ZenBook Pro Duo",   category:"Ultrabook Creativo",  specs:"Intel Ultra 9 · RTX 4070 · 32GB · 2TB SSD · Pantalla OLED 4K", description:"Pensada para diseño, multitarea y productividad seria con doble pantalla y acabado premium.", features:["OLED 4K","Doble pantalla","2TB SSD","Alto rendimiento"], price:2399, oldPrice:2699, image:"https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&h=260&fit=crop", badge:"✨ EDICIÓN LIMITADA" },
+        { id:3,  type:"desktops",   name:"Vortex Titan",      category:"Desktop Workstation", specs:"Ryzen Threadripper · RTX 5090 · 64GB RAM · 4TB M.2", description:"Una estación de trabajo pensada para cargas extremas, render y producción profesional.", features:["64GB RAM","4TB M.2","Fuente modular","Enfriamiento premium"], price:4599, oldPrice:5299, image:"https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&h=260&fit=crop", badge:"🚀 RENDIMIENTO EXTREMO" },
+        { id:4,  type:"laptops",    name:"Edgebook 14 Air",   category:"Ultra Ligera",        specs:"Snapdragon X Elite · 16GB · 1TB · Batería 18h · 1.1kg", description:"Ligera, silenciosa y eficiente. Ideal para estudiar, trabajo móvil y jornadas largas.", features:["18 horas de batería","1.1 kg","1TB SSD","Portabilidad total"], price:1199, oldPrice:1499, image:"https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=400&h=260&fit=crop", badge:"⚡ EFICIENCIA TOTAL" },
+        { id:5,  type:"desktops",   name:"Nebula Studio",     category:"All-in-One Creator",  specs:"M3 Ultra · 48GB unificada · 2TB SSD · Pantalla 32\" 6K", description:"Todo en uno para creadores y diseñadores que quieren potencia con estética limpia.", features:["Pantalla 6K","48GB unificada","2TB SSD","Diseño minimalista"], price:3899, oldPrice:4299, image:"https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=400&h=260&fit=crop", badge:"🎨 PARA DISEÑADORES" },
+        { id:6,  type:"desktops",   name:"Phantom S-19",      category:"Gaming Desktop",      specs:"Ryzen 9 9950X · RTX 5080 · 32GB RGB · 2TB PCIe 5.0", description:"PC gamer de alto nivel para jugar, transmitir y trabajar con fluidez brutal.", features:["32GB RGB","PCIe 5.0","Gaming extremo","Estética premium"], price:3199, oldPrice:3699, image:"https://images.unsplash.com/photo-1593640408182-31c70c8268f5?w=400&h=260&fit=crop", badge:"💀 EDICIÓN PHANTOM" },
+        { id:7,  type:"monitores",  name:"Alpha View 27 Pro", category:"Monitor",             specs:"27'' IPS · 165Hz · 2K · HDR · 1ms", description:"Monitor ideal para gaming, edición y uso diario con colores vivos y respuesta rápida.", features:["2K QHD","165Hz","1ms","HDR"], price:329, oldPrice:389, image:"https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&h=260&fit=crop", badge:"🖥️ MONITOR PRO" },
+        { id:8,  type:"perifericos",name:"Pulse X Keyboard",  category:"Periférico",          specs:"Mecánico RGB · Switches táctiles · Anti-ghosting · USB-C", description:"Teclado mecánico con sensación premium, retroiluminación y respuesta precisa.", features:["Switches táctiles","RGB","Anti-ghosting","USB-C"], price:89, oldPrice:109, image:"https://images.unsplash.com/photo-1545239351-1141bd82e8a6?w=400&h=260&fit=crop", badge:"⌨️ MECÁNICO" },
+        { id:9,  type:"parlantes",  name:"SoundCore Duo",     category:"Parlantes",           specs:"2.1 Stereo · Bluetooth 5.3 · Graves profundos · USB", description:"Sonido compacto con cuerpo, ideal para escritorio, música y juegos casuales.", features:["Bluetooth 5.3","2.1 stereo","Graves potentes","Diseño compacto"], price:79, oldPrice:99, image:"https://images.unsplash.com/photo-1518441902117-f0a6f2a42a0f?w=400&h=260&fit=crop", badge:"🔊 SONIDO CLARO" },
+        { id:10, type:"impresoras", name:"PrintMax EcoTank",  category:"Impresora",           specs:"Wi‑Fi · Escáner · Dúplex · Bajo costo por página", description:"Impresora para hogar y oficina con tanque de tinta y conectividad inalámbrica.", features:["Wi‑Fi","Escáner","Dúplex","EcoTank"], price:219, oldPrice:259, image:"https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=260&fit=crop", badge:"🖨️ OFICINA" },
+        { id:11, type:"sillas",     name:"Gamer Chair Nitro", category:"Silla gamer",         specs:"Ergonómica · Reclinable · Soporte lumbar · 160°", description:"Silla cómoda para largas sesiones frente a la PC, con estilo gamer limpio.", features:["Ergonómica","Reclinable 160°","Soporte lumbar","Reposabrazos"], price:179, oldPrice:229, image:"https://images.unsplash.com/photo-1505843513577-22bb7d21e455?w=400&h=260&fit=crop", badge:"🪑 COMODIDAD" }
     ];
 
-    // Cargar productos desde admin (localStorage) o usar los default
-    let products = (() => {
-        try {
-            const saved = JSON.parse(localStorage.getItem('sm_products'));
-            return Array.isArray(saved) && saved.length ? saved : [...DEFAULT_PRODUCTS];
-        } catch { return [...DEFAULT_PRODUCTS]; }
-    })();
+    const DEFAULT_HERO = {
+        title1: "Potencia creativa.",
+        title2: "Rendimiento sin límites.",
+        subtitle: "En Star Media Computer's encuentras laptops, monitores, periféricos y equipos para creadores. Calidad profesional, diseño limpio y soporte experto.",
+        cta: "Explorar colección",
+        image: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=600&h=400&fit=crop"
+    };
 
     // ─────────────────────────────────────────────
     // ESTADO
     // ─────────────────────────────────────────────
-    let cart = [];
-    let activeFilter = 'all';
-    let toastTimeout = null;
+    let products      = [...DEFAULT_PRODUCTS];
+    let cart          = [];
+    let activeFilter  = 'all';
+    let toastTimeout  = null;
 
     // ─────────────────────────────────────────────
     // REFERENCIAS DOM
     // ─────────────────────────────────────────────
-    const cartCounterSpan      = document.getElementById('cartCounter');
-    const productGrid          = document.getElementById('productGrid');
-    const cartModal            = document.getElementById('cartModal');
-    const productModal         = document.getElementById('productModal');
-    const openCartBtn          = document.getElementById('openCartBtn');
-    const closeCartBtn         = document.getElementById('closeCartBtn');
-    const closeProductBtn      = document.getElementById('closeProductBtn');
-    const cartItemsContainer   = document.getElementById('cartItemsContainer');
-    const cartTotalAmountSpan  = document.getElementById('cartTotalAmount');
+    const cartCounterSpan        = document.getElementById('cartCounter');
+    const productGrid            = document.getElementById('productGrid');
+    const cartModal              = document.getElementById('cartModal');
+    const productModal           = document.getElementById('productModal');
+    const openCartBtn            = document.getElementById('openCartBtn');
+    const closeCartBtn           = document.getElementById('closeCartBtn');
+    const closeProductBtn        = document.getElementById('closeProductBtn');
+    const cartItemsContainer     = document.getElementById('cartItemsContainer');
+    const cartTotalAmountSpan    = document.getElementById('cartTotalAmount');
     const productDetailContainer = document.getElementById('productDetailContainer');
-    const toastDiv             = document.getElementById('toastMsg');
-    const toastTextSpan        = document.getElementById('toastText');
-    const categoryBar          = document.getElementById('categoryBar');
-    const sectionLabel         = document.getElementById('sectionLabel');
+    const toastDiv               = document.getElementById('toastMsg');
+    const toastTextSpan          = document.getElementById('toastText');
+    const categoryBar            = document.getElementById('categoryBar');
+    const sectionLabel           = document.getElementById('sectionLabel');
 
     // ─────────────────────────────────────────────
     // UTILIDADES
     // ─────────────────────────────────────────────
+    function money(value) { return `$${Number(value).toLocaleString()} USD`; }
 
-    function money(value) {
-        return `$${Number(value).toLocaleString()} USD`;
-    }
-
-    // MEJORA #3: sanitización para prevenir XSS
     function sanitize(str) {
         const el = document.createElement('div');
-        el.textContent = str;
+        el.textContent = String(str ?? '');
         return el.innerHTML;
     }
 
@@ -917,83 +827,56 @@
     }
 
     // ─────────────────────────────────────────────
-    // PERSISTENCIA
+    // CARRITO (localStorage — solo del navegador del cliente)
     // ─────────────────────────────────────────────
-
-    function saveCart() {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }
-
-    function loadCart() {
+    function saveCart()  { localStorage.setItem('cart', JSON.stringify(cart)); }
+    function loadCart()  {
         try {
             const saved = JSON.parse(localStorage.getItem('cart'));
             if (Array.isArray(saved)) cart = saved;
-        } catch (e) {
-            cart = [];
-        }
+        } catch { cart = []; }
     }
 
-    // ─────────────────────────────────────────────
-    // TOTALES — MEJORA #4: llamada única, sin duplicados
-    // ─────────────────────────────────────────────
-
     function recalcCartTotals() {
-        const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+        const count = cart.reduce((s, i) => s + i.quantity, 0);
         cartCounterSpan.textContent = count;
         cartTotalAmountSpan.textContent = money(total);
         return { total, count };
     }
 
-    // ─────────────────────────────────────────────
-    // CARRITO
-    // ─────────────────────────────────────────────
-
     function addToCart(product) {
-        const existing = cart.find(item => item.id === product.id);
-        if (existing) {
-            existing.quantity += 1;
-        } else {
-            cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 });
-        }
+        const existing = cart.find(i => i.id === product.id);
+        if (existing) { existing.quantity += 1; }
+        else { cart.push({ id: product.id, name: product.name, price: product.price, quantity: 1 }); }
         saveCart();
-        renderCartModal();               // renderCartModal ya llama recalcCartTotals internamente
+        renderCartModal();
         showToast(`➕ ${product.name} agregado al carrito`);
         cartCounterSpan.style.transform = 'scale(1.3)';
         setTimeout(() => { cartCounterSpan.style.transform = ''; }, 200);
     }
 
-    // MEJORA #5: función para cambiar cantidad (+/-)
     function changeQty(index, delta) {
         if (!cart[index]) return;
         cart[index].quantity += delta;
-        if (cart[index].quantity <= 0) {
-            removeFromCart(index);
-            return;
-        }
-        saveCart();
-        renderCartModal();
+        if (cart[index].quantity <= 0) { removeFromCart(index); return; }
+        saveCart(); renderCartModal();
     }
 
     function removeFromCart(index) {
         const removed = cart[index];
         if (!removed) return;
         cart.splice(index, 1);
-        saveCart();
-        renderCartModal();
+        saveCart(); renderCartModal();
         showToast(`❌ ${removed.name} eliminado del carrito`);
     }
 
     function renderCartModal() {
         if (!cartItemsContainer) return;
-
         if (cart.length === 0) {
             cartItemsContainer.innerHTML = `<div class="empty-cart-msg">🛒 Tu carrito está vacío<br>¡Agrega productos increíbles!</div>`;
-            recalcCartTotals();
-            return;
+            recalcCartTotals(); return;
         }
-
-        // MEJORA #3: usamos sanitize() en los datos de usuario antes de insertar en el DOM
         cartItemsContainer.innerHTML = cart.map((item, idx) => `
             <div class="cart-item">
                 <div class="cart-item-info">
@@ -1002,16 +885,14 @@
                 </div>
                 <div class="cart-item-actions">
                     <button class="qty-btn" data-action="dec" data-index="${idx}" aria-label="Reducir cantidad">−</button>
-                    <span class="cart-qty" aria-label="Cantidad">${item.quantity}</span>
+                    <span class="cart-qty">${item.quantity}</span>
                     <button class="qty-btn" data-action="inc" data-index="${idx}" aria-label="Aumentar cantidad">+</button>
-                    <button class="remove-item" data-index="${idx}" title="Eliminar producto" aria-label="Eliminar ${sanitize(item.name)}">
+                    <button class="remove-item" data-index="${idx}" aria-label="Eliminar ${sanitize(item.name)}">
                         <i class="fas fa-trash-alt" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
         `).join('');
-
-        // Delegación de eventos en el contenedor
         cartItemsContainer.querySelectorAll('.qty-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const idx = parseInt(btn.dataset.index, 10);
@@ -1019,46 +900,30 @@
                 if (!Number.isNaN(idx)) changeQty(idx, delta);
             });
         });
-
         cartItemsContainer.querySelectorAll('.remove-item').forEach(btn => {
             btn.addEventListener('click', () => {
                 const idx = parseInt(btn.dataset.index, 10);
                 if (!Number.isNaN(idx)) removeFromCart(idx);
             });
         });
-
         recalcCartTotals();
     }
 
-    function openCart() {
-        cartModal.style.display = 'flex';
-        renderCartModal();
-        document.getElementById('closeCartBtn').focus();
-    }
-
-    function closeCart() {
-        cartModal.style.display = 'none';
-        openCartBtn.focus();
-    }
+    function openCart()  { cartModal.style.display = 'flex'; renderCartModal(); closeCartBtn.focus(); }
+    function closeCart() { cartModal.style.display = 'none'; openCartBtn.focus(); }
 
     // ─────────────────────────────────────────────
-    // MODAL DE PRODUCTO
+    // MODAL DETALLE PRODUCTO
     // ─────────────────────────────────────────────
-
     function openProduct(id) {
         const product = products.find(p => p.id === id);
         if (!product) return;
-
-        // MEJORA #3: usamos sanitize() en todos los campos de producto
-        const featuresHTML = product.features
-            .map(f => `<div class="detail-chip"><i class="fas fa-check" style="color:#3b82f6; margin-right:8px;" aria-hidden="true"></i>${sanitize(f)}</div>`)
+        const featuresHTML = (product.features || [])
+            .map(f => `<div class="detail-chip"><i class="fas fa-check" style="color:#3b82f6;margin-right:8px;" aria-hidden="true"></i>${sanitize(f)}</div>`)
             .join('');
-
         productDetailContainer.innerHTML = `
             <div class="product-detail">
-                <div>
-                    <img src="${sanitize(product.image)}" alt="${sanitize(product.name)}" class="product-detail-image">
-                </div>
+                <div><img src="${sanitize(product.image)}" alt="${sanitize(product.name)}" class="product-detail-image"></div>
                 <div>
                     <span class="detail-badge">${sanitize(product.badge)}</span>
                     <h2>${sanitize(product.name)}</h2>
@@ -1071,66 +936,42 @@
                     </div>
                     <div class="detail-list">${featuresHTML}</div>
                     <div class="detail-actions">
-                        <button class="btn-primary" id="detailAddBtn">
-                            <i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir al carrito
-                        </button>
+                        <button class="btn-primary" id="detailAddBtn"><i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir al carrito</button>
                         <button class="detail-close" id="detailCloseBtn">Cerrar</button>
                     </div>
                 </div>
-            </div>
-        `;
-
+            </div>`;
         document.getElementById('detailAddBtn')?.addEventListener('click', () => addToCart(product));
         document.getElementById('detailCloseBtn')?.addEventListener('click', closeProduct);
-
         productModal.style.display = 'flex';
         document.getElementById('detailCloseBtn').focus();
     }
-
-    function closeProduct() {
-        productModal.style.display = 'none';
-    }
+    function closeProduct() { productModal.style.display = 'none'; }
 
     // ─────────────────────────────────────────────
-    // CHECKOUT — MEJORA #6: window.open en lugar de location.href
+    // CHECKOUT → WhatsApp
     // ─────────────────────────────────────────────
-
     function checkout() {
-        if (cart.length === 0) {
-            showToast('🛍️ No hay productos en el carrito', true);
-            return;
-        }
-
+        if (cart.length === 0) { showToast('🛍️ No hay productos en el carrito', true); return; }
         let message = 'Hola, quiero comprar:\n\n';
-        cart.forEach(p => {
-            message += `- ${p.name} x${p.quantity} (${money(p.price)})\n`;
-        });
+        cart.forEach(p => { message += `- ${p.name} x${p.quantity} (${money(p.price)})\n`; });
         const { total } = recalcCartTotals();
         message += `\nTotal: ${money(total)}`;
-
-        const phone = '593991603927';
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
-
-        cart = [];
-        saveCart();
-        renderCartModal();
-        closeCart();
+        window.open(`https://wa.me/593991603927?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+        cart = []; saveCart(); renderCartModal(); closeCart();
         showToast('✅ Pedido preparado en WhatsApp');
     }
 
     // ─────────────────────────────────────────────
-    // RENDER DE PRODUCTOS
+    // RENDER PRODUCTOS
     // ─────────────────────────────────────────────
-
     function renderProducts(list = products) {
         if (!productGrid) return;
         productGrid.innerHTML = '';
-
         if (list.length === 0) {
-            productGrid.innerHTML = `<p style="color:#64748b; padding: 2rem;">No hay productos en esta categoría.</p>`;
+            productGrid.innerHTML = `<p style="color:#64748b;padding:2rem;">No hay productos en esta categoría.</p>`;
             return;
         }
-
         list.forEach((prod, idx) => {
             const card = document.createElement('div');
             card.className = 'product-card';
@@ -1139,13 +980,9 @@
             card.setAttribute('aria-label', `${prod.name} - ${money(prod.price)}`);
             card.dataset.type = prod.type;
             card.style.animationDelay = `${idx * 0.05}s`;
-
-            // MEJORA #3: construimos el precio sin riesgo de XSS
             const priceHTML = prod.oldPrice > prod.price
                 ? `${money(prod.price)} <small>${money(prod.oldPrice)}</small>`
                 : money(prod.price);
-
-            // MEJORA: inline styles movidos a clases CSS
             card.innerHTML = `
                 <div class="product-img-wrapper">
                     <img class="product-img" src="${sanitize(prod.image)}" alt="${sanitize(prod.name)}" loading="lazy">
@@ -1156,38 +993,22 @@
                         <span>${sanitize(prod.name)}</span>
                         <span class="badge">${sanitize(prod.category)}</span>
                     </div>
-                    <div class="specs">
-                        <i class="fas fa-microchip" aria-hidden="true"></i> ${sanitize(prod.specs)}
-                    </div>
+                    <div class="specs"><i class="fas fa-microchip" aria-hidden="true"></i> ${sanitize(prod.specs)}</div>
                     <div class="price">${priceHTML}</div>
                     <button class="btn-add" data-id="${prod.id}" aria-label="Añadir ${sanitize(prod.name)} al carrito">
                         <i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir al carrito
                     </button>
-                </div>
-            `;
-
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.btn-add')) return;
-                openProduct(prod.id);
+                </div>`;
+            card.addEventListener('click', e => { if (e.target.closest('.btn-add')) return; openProduct(prod.id); });
+            card.addEventListener('keydown', e => {
+                if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.btn-add')) { e.preventDefault(); openProduct(prod.id); }
             });
-
-            // Accesibilidad: abrir detalle con Enter/Space
-            card.addEventListener('keydown', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.btn-add')) {
-                    e.preventDefault();
-                    openProduct(prod.id);
-                }
-            });
-
             productGrid.appendChild(card);
         });
-
-        // Botones "Añadir al carrito"
         productGrid.querySelectorAll('.btn-add').forEach(btn => {
-            btn.addEventListener('click', (e) => {
+            btn.addEventListener('click', e => {
                 e.stopPropagation();
-                const productId = parseInt(btn.dataset.id, 10);
-                const product = products.find(p => p.id === productId);
+                const product = products.find(p => p.id === parseInt(btn.dataset.id, 10));
                 if (product) addToCart(product);
                 btn.style.transform = 'scale(0.96)';
                 setTimeout(() => { btn.style.transform = ''; }, 150);
@@ -1196,33 +1017,42 @@
     }
 
     // ─────────────────────────────────────────────
-    // FILTROS — MEJORA #7: nav y categorías sincronizados
+    // FILTROS
     // ─────────────────────────────────────────────
-
     function applyFilter(filter) {
         activeFilter = filter;
         document.querySelectorAll('.category-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.filter === filter);
         });
-        const filtered = filter === 'all' ? products : products.filter(p => p.type === filter);
-        renderProducts(filtered);
+        renderProducts(filter === 'all' ? products : products.filter(p => p.type === filter));
     }
 
-    // MEJORA #8: nav activo + sincronización con filtro de categorías
     function setActiveNav(linkId) {
         document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
-        const el = document.getElementById(linkId);
-        if (el) el.classList.add('active');
+        document.getElementById(linkId)?.classList.add('active');
     }
 
     // ─────────────────────────────────────────────
-    // EVENT LISTENERS
+    // APLICAR HERO DESDE FIRESTORE
     // ─────────────────────────────────────────────
+    function applyHero(h) {
+        if (!h) return;
+        const h1 = document.querySelector('.hero-text h1');
+        if (h1) h1.innerHTML = `${sanitize(h.title1 || DEFAULT_HERO.title1)}<br>${sanitize(h.title2 || DEFAULT_HERO.title2)}`;
+        const sub = document.querySelector('.hero-text p');
+        if (sub) sub.textContent = h.subtitle || DEFAULT_HERO.subtitle;
+        const cta = document.getElementById('exploreBtn');
+        if (cta) cta.innerHTML = `<i class="fas fa-arrow-right" aria-hidden="true"></i> ${sanitize(h.cta || DEFAULT_HERO.cta)}`;
+        const img = document.querySelector('.hero-image img');
+        if (img && h.image) { img.src = h.image; img.alt = 'Portada de la tienda'; }
+    }
 
-    categoryBar.addEventListener('click', (e) => {
+    // ─────────────────────────────────────────────
+    // EVENTOS UI
+    // ─────────────────────────────────────────────
+    categoryBar.addEventListener('click', e => {
         const btn = e.target.closest('.category-btn');
         if (!btn) return;
-        // Desactiva el nav cuando el usuario filtra por categoría manualmente
         document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
         document.getElementById('productosBtn').classList.add('active');
         applyFilter(btn.dataset.filter);
@@ -1232,13 +1062,9 @@
     closeCartBtn.addEventListener('click', closeCart);
     closeProductBtn.addEventListener('click', closeProduct);
     document.getElementById('checkoutBtn')?.addEventListener('click', checkout);
-
-    // Cerrar modales al hacer click en el fondo
-    cartModal.addEventListener('click', (e) => { if (e.target === cartModal) closeCart(); });
-    productModal.addEventListener('click', (e) => { if (e.target === productModal) closeProduct(); });
-
-    // Cerrar con Escape
-    document.addEventListener('keydown', (e) => {
+    cartModal.addEventListener('click', e => { if (e.target === cartModal) closeCart(); });
+    productModal.addEventListener('click', e => { if (e.target === productModal) closeProduct(); });
+    document.addEventListener('keydown', e => {
         if (e.key === 'Escape') {
             if (productModal.style.display === 'flex') closeProduct();
             else if (cartModal.style.display === 'flex') closeCart();
@@ -1250,69 +1076,51 @@
         showToast('🌟 Descubre nuestras PCs y accesorios');
     });
 
-    // NAV: Inicio
-    document.getElementById('inicioBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        setActiveNav('inicioBtn');
-        applyFilter('all');
-        sectionLabel.textContent = 'LO MÁS VENDIDO';
+    document.getElementById('inicioBtn')?.addEventListener('click', e => {
+        e.preventDefault(); setActiveNav('inicioBtn');
+        applyFilter('all'); sectionLabel.textContent = 'LO MÁS VENDIDO';
     });
-
-    // NAV: Productos
-    document.getElementById('productosBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        setActiveNav('productosBtn');
-        applyFilter('all');
-        sectionLabel.textContent = 'TODOS LOS PRODUCTOS';
+    document.getElementById('productosBtn')?.addEventListener('click', e => {
+        e.preventDefault(); setActiveNav('productosBtn');
+        applyFilter('all'); sectionLabel.textContent = 'TODOS LOS PRODUCTOS';
         document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
     });
-
-    // NAV: Ofertas — MEJORA #7: también resetea el filtro de categorías
-    document.getElementById('ofertasBtn')?.addEventListener('click', (e) => {
-        e.preventDefault();
-        setActiveNav('ofertasBtn');
-        // Resetear categorías activas
-        document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('ofertasBtn')?.addEventListener('click', e => {
+        e.preventDefault(); setActiveNav('ofertasBtn');
+        document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
         sectionLabel.textContent = '🔥 OFERTAS ESPECIALES';
-        const ofertas = products.filter(p => p.oldPrice && p.oldPrice > p.price);
-        renderProducts(ofertas);
+        renderProducts(products.filter(p => p.oldPrice && p.oldPrice > p.price));
         document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
     });
 
     // ─────────────────────────────────────────────
-    // SINCRONIZAR PORTADA DESDE ADMIN
+    // ★ INIT — carga desde Firebase en tiempo real
     // ─────────────────────────────────────────────
-    function applySavedHero() {
-        try {
-            const h = JSON.parse(localStorage.getItem('sm_hero'));
-            if (!h || typeof h !== 'object') return;
-            const h1 = document.querySelector('.hero-text h1');
-            if (h1 && (h.title1 || h.title2)) {
-                h1.innerHTML = `${sanitize(h.title1 || '')}<br>${sanitize(h.title2 || '')}`;
-            }
-            const sub = document.querySelector('.hero-text p');
-            if (sub && h.subtitle) sub.textContent = h.subtitle;
-            const cta = document.getElementById('exploreBtn');
-            if (cta && h.cta) {
-                cta.innerHTML = `<i class="fas fa-arrow-right" aria-hidden="true"></i> ${sanitize(h.cta)}`;
-            }
-            const img = document.querySelector('.hero-image img');
-            if (img && h.image) { img.src = h.image; img.alt = 'Portada de la tienda'; }
-        } catch (e) { /* sin cambios */ }
-    }
-
-    // ─────────────────────────────────────────────
-    // INIT — nav activo al cargar
-    // ─────────────────────────────────────────────
-    applySavedHero();
     loadCart();
-    renderProducts();
     recalcCartTotals();
     setActiveNav('inicioBtn');
+
+    // Escuchar cambios de productos en tiempo real
+    onSnapshot(doc(db, 'store', 'products'), snap => {
+        if (snap.exists()) {
+            const data = snap.data();
+            if (Array.isArray(data.list) && data.list.length) {
+                products = data.list;
+            }
+        }
+        // Re-aplica el filtro activo con los nuevos productos
+        applyFilter(activeFilter);
+    });
+
+    // Escuchar cambios de portada en tiempo real
+    onSnapshot(doc(db, 'store', 'hero'), snap => {
+        applyHero(snap.exists() ? snap.data() : DEFAULT_HERO);
+    });
 
     setTimeout(() => {
         showToast("✨ Star Media Computer's · Donde la tecnología brilla");
     }, 800);
+
 </script>
 </body>
 </html>

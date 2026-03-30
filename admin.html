@@ -527,7 +527,7 @@
                     <div style="margin-top:1rem;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1rem;">
                         <p style="font-size:.82rem;color:var(--muted2);line-height:1.6;">
                             <i class="fas fa-circle-info" style="color:var(--accent);margin-right:6px;"></i>
-                            Los cambios de portada se guardan en <code style="background:var(--surface);padding:2px 6px;border-radius:6px;font-size:.78rem;">localStorage</code> y se aplican automáticamente en <strong>index.html</strong> al recargar (siempre que el <code style="background:var(--surface);padding:2px 6px;border-radius:6px;font-size:.78rem;">index.html</code> tenga el script de sincronización incluido).
+                            Los cambios se guardan directamente en <strong>Firebase Firestore</strong> y se reflejan en tu web publicada en <strong>GitHub Pages al instante</strong>, sin necesidad de resubir archivos.
                         </p>
                     </div>
                 </div>
@@ -630,7 +630,22 @@
     <span id="toastText">Guardado</span>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCnJ4vjMzJ9soVrKqSVegyWPK66IUb3QXs",
+    authDomain: "star-media-store.firebaseapp.com",
+    projectId: "star-media-store",
+    storageBucket: "star-media-store.firebasestorage.app",
+    messagingSenderId: "832599368232",
+    appId: "1:832599368232:web:418c05ca72e7ba581d0b1d",
+    measurementId: "G-G4BSNNLSVP"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
 // ─── CREDENCIALES ───────────────────────────────
 const CREDENTIALS = { user: 'admin', pass: 'starmedia2026' };
 
@@ -667,19 +682,46 @@ let tempProdImage = null; // base64 para imagen subida localmente
 let tempHeroImage = null;
 
 // ─── PERSISTENCIA ───────────────────────────────
-function loadData() {
+async function loadData() {
+    // Cargar productos desde Firestore
     try {
-        const p = JSON.parse(localStorage.getItem('sm_products'));
-        products = Array.isArray(p) ? p : [...DEFAULT_PRODUCTS];
-    } catch { products = [...DEFAULT_PRODUCTS]; }
+        const snap = await getDoc(doc(db, 'store', 'products'));
+        if (snap.exists() && Array.isArray(snap.data().list) && snap.data().list.length) {
+            products = snap.data().list;
+        } else {
+            products = [...DEFAULT_PRODUCTS];
+        }
+    } catch (e) {
+        console.warn('Error cargando productos de Firestore, usando defaults', e);
+        products = [...DEFAULT_PRODUCTS];
+    }
+    // Cargar hero desde Firestore
     try {
-        const h = JSON.parse(localStorage.getItem('sm_hero'));
-        heroData = h && typeof h === 'object' ? h : {...DEFAULT_HERO};
-    } catch { heroData = {...DEFAULT_HERO}; }
+        const snap = await getDoc(doc(db, 'store', 'hero'));
+        heroData = (snap.exists() && snap.data()) ? snap.data() : {...DEFAULT_HERO};
+    } catch (e) {
+        console.warn('Error cargando hero de Firestore, usando defaults', e);
+        heroData = {...DEFAULT_HERO};
+    }
 }
 
-function saveProducts() { localStorage.setItem('sm_products', JSON.stringify(products)); }
-function saveHero()     { localStorage.setItem('sm_hero',     JSON.stringify(heroData)); }
+async function saveProducts() {
+    try {
+        await setDoc(doc(db, 'store', 'products'), { list: products });
+    } catch (e) {
+        showToast('Error guardando en Firebase ❌', 'error');
+        console.error(e);
+    }
+}
+
+async function saveHero() {
+    try {
+        await setDoc(doc(db, 'store', 'hero'), heroData);
+    } catch (e) {
+        showToast('Error guardando portada en Firebase ❌', 'error');
+        console.error(e);
+    }
+}
 
 // ─── TOAST ──────────────────────────────────────
 function showToast(msg, type='success') {
@@ -698,14 +740,15 @@ function showToast(msg, type='success') {
 document.getElementById('loginBtn').addEventListener('click', tryLogin);
 document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
 
-function tryLogin() {
+async function tryLogin() {
     const u = document.getElementById('loginUser').value.trim();
     const p = document.getElementById('loginPass').value;
     const err = document.getElementById('loginError');
     if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('adminApp').style.display = 'block';
-        loadData();
+        showToast('Cargando datos desde Firebase...', 'warn');
+        await loadData();
         renderAll();
         loadHeroForm();
     } else {
@@ -909,7 +952,7 @@ function addFeatureRow(val='') {
 document.getElementById('addFeatureBtn').addEventListener('click', () => addFeatureRow(''));
 
 // Save product
-document.getElementById('saveProductBtn').addEventListener('click', () => {
+document.getElementById('saveProductBtn').addEventListener('click', async () => {
     const name  = document.getElementById('fName').value.trim();
     const price = parseFloat(document.getElementById('fPrice').value);
     if (!name) { showToast('El nombre es obligatorio', 'error'); return; }
@@ -938,11 +981,13 @@ document.getElementById('saveProductBtn').addEventListener('click', () => {
     if (editingId !== null) {
         const idx = products.findIndex(p => p.id === editingId);
         if (idx !== -1) products[idx] = { ...products[idx], ...data };
-        showToast(`✅ "${name}" actualizado`);
+        await saveProducts();
+        showToast(`✅ "${name}" actualizado en Firebase`);
     } else {
         const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
         products.push({ id: newId, ...data });
-        showToast(`✅ "${name}" agregado`);
+        await saveProducts();
+        showToast(`✅ "${name}" guardado en Firebase`);
     }
 
     saveProducts();
@@ -968,14 +1013,14 @@ function openConfirm(id) {
     document.getElementById('confirmModal').classList.add('open');
 }
 
-document.getElementById('confirmDelBtn').addEventListener('click', () => {
+document.getElementById('confirmDelBtn').addEventListener('click', async () => {
     if (deletingId === null) return;
     const prod = products.find(p => p.id === deletingId);
     products = products.filter(p => p.id !== deletingId);
-    saveProducts();
+    await saveProducts();
     renderAll();
     document.getElementById('confirmModal').classList.remove('open');
-    showToast(`🗑️ "${prod?.name}" eliminado`, 'warn');
+    showToast(`🗑️ "${prod?.name}" eliminado de Firebase`, 'warn');
     deletingId = null;
 });
 
@@ -1041,7 +1086,7 @@ document.getElementById('heroFileInput').addEventListener('change', e => {
     reader.readAsDataURL(file);
 });
 
-document.getElementById('saveHeroBtn').addEventListener('click', () => {
+document.getElementById('saveHeroBtn').addEventListener('click', async () => {
     heroData = {
         title1:   document.getElementById('heroTitle1').value.trim()   || DEFAULT_HERO.title1,
         title2:   document.getElementById('heroTitle2').value.trim()   || DEFAULT_HERO.title2,
@@ -1049,8 +1094,8 @@ document.getElementById('saveHeroBtn').addEventListener('click', () => {
         cta:      document.getElementById('heroCta').value.trim()      || DEFAULT_HERO.cta,
         image:    tempHeroImage || document.getElementById('heroImageUrl').value.trim() || DEFAULT_HERO.image
     };
-    saveHero();
-    showToast('🎨 Portada guardada correctamente');
+    await saveHero();
+    showToast('🎨 Portada guardada en Firebase — visible en la web al instante');
 });
 
 // ─── ESCAPE key ──────────────────────────────────
