@@ -8,10 +8,22 @@
     <meta name="author" content="Star Media Computer's">
     <title>Star Media Computer's | Tienda de alto rendimiento</title>
 
+    <!-- DNS prefetch para recursos externos → menos latencia -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="dns-prefetch" href="https://firestore.googleapis.com">
+    <link rel="dns-prefetch" href="https://images.unsplash.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- font-display=swap → texto visible inmediatamente, fuente carga después -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome con media trick → no bloquea el render -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"></noscript>
 
     <style>
         * {
@@ -628,6 +640,18 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── OPTIMIZACIÓN DE RENDIMIENTO ── */
+        /* Secciones fuera de pantalla no se renderizan hasta que son visibles */
+        .features        { content-visibility: auto; contain-intrinsic-size: 0 180px; }
+        .products-section{ content-visibility: auto; contain-intrinsic-size: 0 800px; }
+        footer           { content-visibility: auto; contain-intrinsic-size: 0 100px; }
+
+        /* Imágenes de producto con aspect-ratio fijo → evita layout shift (CLS) */
+        .product-img {
+            aspect-ratio: 400 / 260;
+            background: #111722;
+        }
+
         /* ── SKELETON LOADER ── */
         @keyframes shimmer {
             0%   { background-position: -600px 0; }
@@ -806,7 +830,7 @@
 <!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, onSnapshot, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCnJ4vjMzJ9soVrKqSVegyWPK66IUb3QXs",
@@ -820,6 +844,9 @@
 
     const app = initializeApp(firebaseConfig);
     const db  = getFirestore(app);
+
+    // Cache offline → segunda visita carga datos al instante desde disco
+    enableIndexedDbPersistence(db).catch(() => {/* modo privado no lo soporta, ignorar */});
 
     // ─────────────────────────────────────────────
     // DATOS DEFAULT
@@ -892,8 +919,33 @@
     }
 
     // ─────────────────────────────────────────────
-    // CARRITO (localStorage — solo del navegador del cliente)
+    // OPTIMIZACIÓN DE IMÁGENES
     // ─────────────────────────────────────────────
+
+    // Ajusta URLs de Unsplash al tamaño exacto necesario y añade formato WebP
+    function optimizeImg(url, w = 400, h = 260) {
+        if (!url) return '';
+        if (url.startsWith('data:')) return url; // base64, no tocar
+        if (url.includes('unsplash.com')) {
+            // Reemplaza parámetros con tamaño óptimo + formato auto (WebP si el navegador lo soporta)
+            const base = url.split('?')[0];
+            return `${base}?w=${w}&h=${h}&fit=crop&auto=format&q=75`;
+        }
+        return url;
+    }
+
+    // IntersectionObserver para lazy-load real de imágenes
+    const imgObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const img = entry.target;
+            if (img.dataset.src) {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            }
+            imgObserver.unobserve(img);
+        });
+    }, { rootMargin: '200px' }); // empieza a cargar 200px antes de que sea visible
     function saveCart()  { localStorage.setItem('cart', JSON.stringify(cart)); }
     function loadCart()  {
         try {
@@ -1051,12 +1103,20 @@
             card.setAttribute('aria-label', `${prod.name} - ${money(prod.price)}`);
             card.dataset.type = prod.type;
             card.style.animationDelay = `${idx * 0.05}s`;
+
             const priceHTML = prod.oldPrice > prod.price
                 ? `${money(prod.price)} <small>${money(prod.oldPrice)}</small>`
                 : money(prod.price);
+
+            // Primeras 4 tarjetas cargan inmediato, el resto lazy
+            const optimizedSrc = optimizeImg(prod.image, 400, 260);
+            const imgAttrs = idx < 4
+                ? `src="${sanitize(optimizedSrc)}" loading="eager"`
+                : `data-src="${sanitize(optimizedSrc)}" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 260'%3E%3Crect width='400' height='260' fill='%23111722'/%3E%3C/svg%3E" loading="lazy"`;
+
             card.innerHTML = `
                 <div class="product-img-wrapper">
-                    <img class="product-img" src="${sanitize(prod.image)}" alt="${sanitize(prod.name)}" loading="lazy">
+                    <img class="product-img" ${imgAttrs} alt="${sanitize(prod.name)}" width="400" height="260">
                     <span class="product-badge-overlay">${sanitize(prod.badge)}</span>
                 </div>
                 <div class="product-info">
@@ -1070,11 +1130,18 @@
                         <i class="fas fa-cart-plus" aria-hidden="true"></i> Añadir al carrito
                     </button>
                 </div>`;
+
             card.addEventListener('click', e => { if (e.target.closest('.btn-add')) return; openProduct(prod.id); });
             card.addEventListener('keydown', e => {
                 if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('.btn-add')) { e.preventDefault(); openProduct(prod.id); }
             });
+
             productGrid.appendChild(card);
+
+            // Registrar imagen para lazy load si no es de las primeras 4
+            if (idx >= 4) {
+                imgObserver.observe(card.querySelector('.product-img'));
+            }
         });
         productGrid.querySelectorAll('.btn-add').forEach(btn => {
             btn.addEventListener('click', e => {
