@@ -819,7 +819,7 @@
         <a href="#" id="inicioBtn" class="active">Inicio</a>
         <a href="#" id="productosBtn">Productos</a>
         <a href="#" id="ofertasBtn">Ofertas</a>
-        <a href="https://wa.me/593991603927" target="_blank" rel="noopener noreferrer">Contacto</a>
+        <a href="https://wa.me/593980595293" target="_blank" rel="noopener noreferrer">Contacto</a>
     </nav>
     <button class="cart-icon" id="openCartBtn" aria-label="Abrir carrito de compras">
         <i class="fas fa-shopping-cart" aria-hidden="true"></i>
@@ -1185,7 +1185,7 @@
         cart.forEach(p => { message += `- ${p.name} x${p.quantity} (${money(p.price)})\n`; });
         const { total } = recalcCartTotals();
         message += `\nTotal: ${money(total)}`;
-        window.open(`https://wa.me/593991603927?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
+        window.open(`https://wa.me/593980595293?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
         cart = []; saveCart(); renderCartModal(); closeCart();
         showToast('✅ Pedido preparado en WhatsApp');
     }
